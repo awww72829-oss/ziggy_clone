@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Swiggy Fleet — dashboard</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="rail">
+    <div class="brand">
+      <span class="dot"></span>
+      <div>
+        <strong>SWIGGY FLEET</strong>
+        <small id="rail-sub">control surface</small>
+      </div>
+    </div>
+
+    <nav id="nav">
+      <div class="nav-sep">Harvest</div>
+      <button class="nav" data-act="nav" data-tab="scan">Scan</button>
+      <button class="nav" data-act="nav" data-tab="overview">Overview</button>
+      <button class="nav" data-act="nav" data-tab="sessions">Sessions</button>
+      <button class="nav" data-act="nav" data-tab="login">Login</button>
+      <div class="nav-sep">Order</div>
+      <button class="nav" data-act="nav" data-tab="im">Instamart</button>
+      <button class="nav" data-act="nav" data-tab="food">Food</button>
+      <button class="nav" data-act="nav" data-tab="history">History</button>
+      <div class="nav-sep">Money</div>
+      <button class="nav" data-act="nav" data-tab="wallet">Wallet</button>
+      <button class="nav" data-act="nav" data-tab="offers">Offers</button>
+      <div class="nav-sep">Infra</div>
+      <button class="nav" data-act="nav" data-tab="proxies">Proxies</button>
+      <button class="nav" data-act="nav" data-tab="logs">Logs</button>
+    </nav>
+
+    <div class="rail-foot">
+      <label for="session-pick">Active session</label>
+      <select id="session-pick"></select>
+      <div class="muted small" id="rail-status">no session selected</div>
+    </div>
+  </aside>
+
+  <main class="board">
+    <header class="topbar">
+      <div>
+        <h1 id="title">Overview</h1>
+        <p class="muted small" id="subtitle">fleet health, liveness, and the active account</p>
+      </div>
+      <div class="top-actions">
+        <button class="btn" data-act="refresh-all">↻ Refresh</button>
+        <button class="btn primary" data-act="session:check-all">Check all sessions</button>
+      </div>
+    </header>
+
+    <section id="view" class="view"></section>
+  </main>
+</div>
+
+<div id="modal" class="modal hidden">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3 id="modal-title">raw</h3>
+      <button class="btn ghost" data-act="modal:close">✕</button>
+    </div>
+    <pre id="modal-body"></pre>
+  </div>
+</div>
+
+<div id="toasts" class="toasts"></div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

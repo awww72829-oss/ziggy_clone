@@ -1,0 +1,2228 @@
+[
+ {
+  "method": "GET",
+  "path": "signed-url/upload/address-images",
+  "iface": "a",
+  "pkg": "in.swiggy.address.formV2.repository.addressImages",
+  "fn": "a"
+ },
+ {
+  "method": "POST",
+  "path": "signed-url/download",
+  "iface": "a",
+  "pkg": "in.swiggy.address.formV2.repository.addressImages",
+  "fn": "b"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/shared_cart",
+  "iface": "a",
+  "pkg": "in.swiggy.grouporder.data.api",
+  "fn": "a"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/shared_cart/unlock",
+  "iface": "a",
+  "pkg": "in.swiggy.grouporder.data.api",
+  "fn": "b"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/shared_cart/create",
+  "iface": "a",
+  "pkg": "in.swiggy.grouporder.data.api",
+  "fn": "c"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/shared_cart/update",
+  "iface": "a",
+  "pkg": "in.swiggy.grouporder.data.api",
+  "fn": "d"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/shared_cart/join",
+  "iface": "a",
+  "pkg": "in.swiggy.grouporder.data.api",
+  "fn": "e"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/v1/shared_cart",
+  "iface": "a",
+  "pkg": "in.swiggy.grouporder.data.api",
+  "fn": "f"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/entity/{entityType}/{entityId}",
+  "iface": "a",
+  "pkg": "in.swiggy.android.doeventdetail.api",
+  "fn": "a"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/entity/{entityType}/{entityId}/json",
+  "iface": "a",
+  "pkg": "in.swiggy.android.doeventdetail.api",
+  "fn": "b"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/entity/DINECASH_DEAL_DETAIL/{voucherId}/json",
+  "iface": "a",
+  "pkg": "in.swiggy.android.dovoucher.api",
+  "fn": "a"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/entity/DINECASH_DEAL_DETAIL/{voucherId}",
+  "iface": "a",
+  "pkg": "in.swiggy.android.dovoucher.api",
+  "fn": "b"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/entity/VOUCHER/{voucherId}",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dovoucher.api",
+  "fn": "a"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/entity/VOUCHER/{voucherId}/json",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dovoucher.api",
+  "fn": "b"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/restaurant/{restaurantId}/deal-detail/json",
+  "iface": "a",
+  "pkg": "in.swiggy.android.docombinedinventory.api",
+  "fn": "a"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/restaurant/{restaurantId}/deal-detail",
+  "iface": "a",
+  "pkg": "in.swiggy.android.docombinedinventory.api",
+  "fn": "b"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/timeline/orderjob/{orderJobID}",
+  "iface": "c",
+  "pkg": "in.swiggy.android.tejas",
+  "fn": "a"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/dash/rating",
+  "iface": "c",
+  "pkg": "in.swiggy.android.tejas",
+  "fn": "b"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/dash/oms/order-job/{orderjob}/status",
+  "iface": "c",
+  "pkg": "in.swiggy.android.tejas",
+  "fn": "c"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/timeline/{timelineUserType}/tracking/{trackingId}",
+  "iface": "c",
+  "pkg": "in.swiggy.android.tejas",
+  "fn": "d"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/dash/rating/dismiss",
+  "iface": "c",
+  "pkg": "in.swiggy.android.tejas",
+  "fn": "e"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/tracking/orderjob/{id}",
+  "iface": "c",
+  "pkg": "in.swiggy.android.tejas",
+  "fn": "f"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/dash/oms/order/{id}/context/ORDER_JOB",
+  "iface": "c",
+  "pkg": "in.swiggy.android.tejas",
+  "fn": "getOrderByJobId"
+ },
+ {
+  "method": "POST",
+  "path": "/v1/token/refresh",
+  "iface": "IOzoneApi",
+  "pkg": "in.swiggy.android.tejas.ozone.api",
+  "fn": "refreshAccessToken"
+ },
+ {
+  "method": "POST",
+  "path": "/v1/accounts/signInWithTID",
+  "iface": "IOzoneApi",
+  "pkg": "in.swiggy.android.tejas.ozone.api",
+  "fn": "signInWithTid"
+ },
+ {
+  "method": "GET",
+  "path": "/payment/presentation/api/juspaywallets/v2/getCustomerAuthToken",
+  "iface": "IInAppUPIApi",
+  "pkg": "in.swiggy.android.tejas.ozone.api",
+  "fn": "clientAuthTokenV2"
+ },
+ {
+  "method": "POST",
+  "path": "/payment/presentation/v1/inappupi/update",
+  "iface": "IInAppUPIApi",
+  "pkg": "in.swiggy.android.tejas.ozone.api",
+  "fn": "saveGstResponse"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/track/card",
+  "iface": "ISwiggyApi",
+  "pkg": "in.swiggy.android.tejas.api",
+  "fn": "getTrackCardList"
+ },
+ {
+  "method": "GET",
+  "path": "/place/autocomplete",
+  "iface": "ISwiggyPlacesSearchAPI",
+  "pkg": "in.swiggy.android.tejas.feature.swiggygoogle.swiggyplacesearch",
+  "fn": "getGooglePlacesFromSwiggyPlaceAutoCompleteApi"
+ },
+ {
+  "method": "GET",
+  "path": "/place/autocomplete",
+  "iface": "IPlacesSearchAPI",
+  "pkg": "in.swiggy.android.tejas.feature.swiggygoogle.swiggyplacesearch.api",
+  "fn": "getGooglePlacesFromAutoComplete"
+ },
+ {
+  "method": "POST",
+  "path": "chat/v1/conversations/{conversationID}/messages",
+  "iface": "IChatNotificationApi",
+  "pkg": "in.swiggy.android.tejas.feature.chatnotification.api",
+  "fn": "sendChatMessageApi"
+ },
+ {
+  "method": "POST",
+  "path": "api/fraudnabuse/v1/fact/device-session/fingerprint",
+  "iface": "IFnaApi",
+  "pkg": "in.swiggy.android.tejas.feature.tns",
+  "fn": "sendDeviceIdSignals"
+ },
+ {
+  "method": "POST",
+  "path": "api/fraudnabuse/v1/entity",
+  "iface": "IFnaApi",
+  "pkg": "in.swiggy.android.tejas.feature.tns",
+  "fn": "sendTnsSignals"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v3/collection/restaurant/{collectionId}",
+  "iface": "ILandingAPI",
+  "pkg": "in.swiggy.android.tejas.feature.landing",
+  "fn": "getCollectionV3"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v3/collection/restaurant/json/{collectionId}",
+  "iface": "ILandingAPI",
+  "pkg": "in.swiggy.android.tejas.feature.landing",
+  "fn": "getCollectionV3Json"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/favourites",
+  "iface": "ILandingAPI",
+  "pkg": "in.swiggy.android.tejas.feature.landing",
+  "fn": "getFavorites"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/json/favourites",
+  "iface": "ILandingAPI",
+  "pkg": "in.swiggy.android.tejas.feature.landing",
+  "fn": "getFavoritesJson"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/landing-page/{landing}",
+  "iface": "ILandingAPI",
+  "pkg": "in.swiggy.android.tejas.feature.landing",
+  "fn": "getFeatureCollection"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/json/landing-page/{landing}",
+  "iface": "ILandingAPI",
+  "pkg": "in.swiggy.android.tejas.feature.landing",
+  "fn": "getFeatureCollectionJSON"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/json/landing-page/{landing}",
+  "iface": "ILandingAPI",
+  "pkg": "in.swiggy.android.tejas.feature.landing",
+  "fn": "getFeatureCollectionJSONWithRequestBody"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/landing-page/{landing}",
+  "iface": "ILandingAPI",
+  "pkg": "in.swiggy.android.tejas.feature.landing",
+  "fn": "getFeatureCollectionWithRequestBody"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/food_bites_page",
+  "iface": "ILandingAPI",
+  "pkg": "in.swiggy.android.tejas.feature.landing",
+  "fn": "getFoodReelsData"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/json/food_bites_page",
+  "iface": "ILandingAPI",
+  "pkg": "in.swiggy.android.tejas.feature.landing",
+  "fn": "getFoodReelsDataJson"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/json/disliked",
+  "iface": "ILandingAPI",
+  "pkg": "in.swiggy.android.tejas.feature.landing",
+  "fn": "getHiddenRestoJson"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/disliked",
+  "iface": "ILandingAPI",
+  "pkg": "in.swiggy.android.tejas.feature.landing",
+  "fn": "getHiddenRestos"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/irctc",
+  "iface": "ILandingAPI",
+  "pkg": "in.swiggy.android.tejas.feature.landing",
+  "fn": "getIrctcData"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/json/irctc",
+  "iface": "ILandingAPI",
+  "pkg": "in.swiggy.android.tejas.feature.landing",
+  "fn": "getIrctcDataJson"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/item_collection/{collection_id}",
+  "iface": "ILandingAPI",
+  "pkg": "in.swiggy.android.tejas.feature.landing",
+  "fn": "getItemCollectionV1"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/item_collection/json/{collection_id}",
+  "iface": "ILandingAPI",
+  "pkg": "in.swiggy.android.tejas.feature.landing",
+  "fn": "getItemCollectionV1Json"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v2/item_collection/{collection_id}",
+  "iface": "ILandingAPI",
+  "pkg": "in.swiggy.android.tejas.feature.landing",
+  "fn": "getItemCollectionV2"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v2/item_collection/json/{collection_id}",
+  "iface": "ILandingAPI",
+  "pkg": "in.swiggy.android.tejas.feature.landing",
+  "fn": "getItemCollectionV2Json"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v2/meal_collection/{collection_id}",
+  "iface": "ILandingAPI",
+  "pkg": "in.swiggy.android.tejas.feature.landing",
+  "fn": "getMealCollection"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v2/meal_collection/json/{collection_id}",
+  "iface": "ILandingAPI",
+  "pkg": "in.swiggy.android.tejas.feature.landing",
+  "fn": "getMealCollectionJson"
+ },
+ {
+  "method": "GET",
+  "path": "api/v1/referrer/check",
+  "iface": "IReferralApi",
+  "pkg": "in.swiggy.android.tejas.feature.referral.api",
+  "fn": "checkReferralEligibility"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/referrer/landing",
+  "iface": "IReferralApi",
+  "pkg": "in.swiggy.android.tejas.feature.referral.api",
+  "fn": "getReferralLandingScreenData"
+ },
+ {
+  "method": "POST",
+  "path": "api/v2/referrer/landing",
+  "iface": "IReferralApi",
+  "pkg": "in.swiggy.android.tejas.feature.referral.api",
+  "fn": "getReferralLandingScreenDataForContactSync"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/referrer/contact",
+  "iface": "IReferralApi",
+  "pkg": "in.swiggy.android.tejas.feature.referral.api",
+  "fn": "postPhoneNoRequestForContactSync"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/referral/validity",
+  "iface": "IReferralApi",
+  "pkg": "in.swiggy.android.tejas.feature.referral.api",
+  "fn": "renewExpiryCoupon"
+ },
+ {
+  "method": "POST",
+  "path": "addresses/v1",
+  "iface": "IAddressMapsProtoApi",
+  "pkg": "in.swiggy.android.tejas.feature.address.v2.api",
+  "fn": "addAddress"
+ },
+ {
+  "method": "POST",
+  "path": "api/v2/pop/address/add",
+  "iface": "IAddressMapsProtoApi",
+  "pkg": "in.swiggy.android.tejas.feature.address.v2.api",
+  "fn": "addPopAddress"
+ },
+ {
+  "method": "GET",
+  "path": "addresses/v1",
+  "iface": "IAddressMapsProtoApi",
+  "pkg": "in.swiggy.android.tejas.feature.address.v2.api",
+  "fn": "getAddressById"
+ },
+ {
+  "method": "GET",
+  "path": "addresses/v1/all?client_id=android-consumer-app",
+  "iface": "IAddressMapsProtoApi",
+  "pkg": "in.swiggy.android.tejas.feature.address.v2.api",
+  "fn": "getAllAddresses"
+ },
+ {
+  "method": "GET",
+  "path": "addresses/defaulting/v1/all?clientId=android-consumer-app",
+  "iface": "IAddressMapsProtoApi",
+  "pkg": "in.swiggy.android.tejas.feature.address.v2.api",
+  "fn": "getAllDefaultingAddresses"
+ },
+ {
+  "method": "PUT",
+  "path": "addresses/event/v1",
+  "iface": "IAddressMapsProtoApi",
+  "pkg": "in.swiggy.android.tejas.feature.address.v2.api",
+  "fn": "partialAddressUpdate"
+ },
+ {
+  "method": "PUT",
+  "path": "addresses/v1",
+  "iface": "IAddressMapsProtoApi",
+  "pkg": "in.swiggy.android.tejas.feature.address.v2.api",
+  "fn": "updateAddress"
+ },
+ {
+  "method": "POST",
+  "path": "addresses/v1",
+  "iface": "IAddressMapsJsonApi",
+  "pkg": "in.swiggy.android.tejas.feature.address.v2.api",
+  "fn": "addAddress"
+ },
+ {
+  "method": "GET",
+  "path": "addresses/v1",
+  "iface": "IAddressMapsJsonApi",
+  "pkg": "in.swiggy.android.tejas.feature.address.v2.api",
+  "fn": "getAddressById"
+ },
+ {
+  "method": "GET",
+  "path": "addresses/v1/all?client_id=android-consumer-app",
+  "iface": "IAddressMapsJsonApi",
+  "pkg": "in.swiggy.android.tejas.feature.address.v2.api",
+  "fn": "getAllAddresses"
+ },
+ {
+  "method": "GET",
+  "path": "addresses/defaulting/v1/all?clientId=android-consumer-app",
+  "iface": "IAddressMapsJsonApi",
+  "pkg": "in.swiggy.android.tejas.feature.address.v2.api",
+  "fn": "getAllDefaultingAddresses"
+ },
+ {
+  "method": "PUT",
+  "path": "addresses/event/v1",
+  "iface": "IAddressMapsJsonApi",
+  "pkg": "in.swiggy.android.tejas.feature.address.v2.api",
+  "fn": "partialAddressUpdate"
+ },
+ {
+  "method": "PUT",
+  "path": "addresses/v1",
+  "iface": "IAddressMapsJsonApi",
+  "pkg": "in.swiggy.android.tejas.feature.address.v2.api",
+  "fn": "updateAddress"
+ },
+ {
+  "method": "POST",
+  "path": "/directions",
+  "iface": "IDirectionsSwiggyApi",
+  "pkg": "in.swiggy.android.tejas.feature.google.directionscache.api",
+  "fn": "getDirections"
+ },
+ {
+  "method": "GET",
+  "path": "https://www.swiggy.com/mapi/help/resources",
+  "iface": "IHelpCenterAPI",
+  "pkg": "in.swiggy.android.tejas.feature.helpcenter",
+  "fn": "getWebResourceList"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/app/login/call_verification_status",
+  "iface": "IOtpVerificationApi",
+  "pkg": "in.swiggy.android.tejas.feature.otpverification",
+  "fn": "getCallVerificationStatus"
+ },
+ {
+  "method": "POST",
+  "path": "api/v3/app/login/call_verification_status",
+  "iface": "IOtpVerificationApi",
+  "pkg": "in.swiggy.android.tejas.feature.otpverification",
+  "fn": "getCallVerificationStatusV3"
+ },
+ {
+  "method": "POST",
+  "path": "api/v2/app/request_call_verification",
+  "iface": "IOtpVerificationApi",
+  "pkg": "in.swiggy.android.tejas.feature.otpverification",
+  "fn": "initiateCallVerification"
+ },
+ {
+  "method": "POST",
+  "path": "api/v3/app/request_call_verification",
+  "iface": "IOtpVerificationApi",
+  "pkg": "in.swiggy.android.tejas.feature.otpverification",
+  "fn": "initiateCallVerificationV3"
+ },
+ {
+  "method": "POST",
+  "path": "api/v2/app/whatsapp_otp",
+  "iface": "IOtpVerificationApi",
+  "pkg": "in.swiggy.android.tejas.feature.otpverification",
+  "fn": "requestWhatsappOtp"
+ },
+ {
+  "method": "POST",
+  "path": "api/v3/app/whatsapp_otp",
+  "iface": "IOtpVerificationApi",
+  "pkg": "in.swiggy.android.tejas.feature.otpverification",
+  "fn": "requestWhatsappOtpV3"
+ },
+ {
+  "method": "GET",
+  "path": "api/v1/cricket/match-status",
+  "iface": "IMatchHoursAPI",
+  "pkg": "in.swiggy.android.tejas.feature.ipl",
+  "fn": "fetchMatchState"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/events/event-status",
+  "iface": "IMatchHoursAPI",
+  "pkg": "in.swiggy.android.tejas.feature.ipl",
+  "fn": "fetchMultiEventStatus"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/menu/search/json",
+  "iface": "ICollectionSearchAPI",
+  "pkg": "in.swiggy.android.tejas.feature.search.api.results",
+  "fn": "getCollectionSearchJsonResponse"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/menu/search",
+  "iface": "ICollectionSearchAPI",
+  "pkg": "in.swiggy.android.tejas.feature.search.api.results",
+  "fn": "getCollectionSearchResponse"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/ai-search/",
+  "iface": "ISearchResultsProtobufAPI",
+  "pkg": "in.swiggy.android.tejas.feature.search.api.results",
+  "fn": "getAiSearchResults"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/ai-search/{tabId}",
+  "iface": "ISearchResultsProtobufAPI",
+  "pkg": "in.swiggy.android.tejas.feature.search.api.results",
+  "fn": "getAiSearchResultsForTab"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/layout-section/PRE_SEARCH",
+  "iface": "ISearchResultsProtobufAPI",
+  "pkg": "in.swiggy.android.tejas.feature.search.api.results",
+  "fn": "getPreSearchLayoutSection"
+ },
+ {
+  "method": "POST",
+  "path": "api/v3/search/{tabId}",
+  "iface": "ISearchResultsProtobufAPI",
+  "pkg": "in.swiggy.android.tejas.feature.search.api.results",
+  "fn": "getSearchResults"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/json/ai-search/",
+  "iface": "ISearchResultsJsonApi",
+  "pkg": "in.swiggy.android.tejas.feature.search.api.results",
+  "fn": "getAiSearchResults"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/json/ai-search/{tabId}",
+  "iface": "ISearchResultsJsonApi",
+  "pkg": "in.swiggy.android.tejas.feature.search.api.results",
+  "fn": "getAiSearchResultsForTab"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/json/layout-section/PRE_SEARCH",
+  "iface": "ISearchResultsJsonApi",
+  "pkg": "in.swiggy.android.tejas.feature.search.api.results",
+  "fn": "getPreSearchLayoutSection"
+ },
+ {
+  "method": "POST",
+  "path": "api/v3/json/search/{tabId}",
+  "iface": "ISearchResultsJsonApi",
+  "pkg": "in.swiggy.android.tejas.feature.search.api.results",
+  "fn": "getSearchResults"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/menu/search/json",
+  "iface": "IAipSearchAPI",
+  "pkg": "in.swiggy.android.tejas.feature.search.api.results",
+  "fn": "getAipSearchJsonResponse"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/menu/search",
+  "iface": "IAipSearchAPI",
+  "pkg": "in.swiggy.android.tejas.feature.search.api.results",
+  "fn": "getAipSearchResponse"
+ },
+ {
+  "method": "POST",
+  "path": "api/search/suggest/v1",
+  "iface": "ISearchSuggestionsApi",
+  "pkg": "in.swiggy.android.tejas.feature.search.api.suggestion",
+  "fn": "getSearchSuggestions"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/json/auto-suggest/{tabId}",
+  "iface": "ISearchSuggestionsJsonApi",
+  "pkg": "in.swiggy.android.tejas.feature.search.api.suggestion",
+  "fn": "getPLSearchSuggestions"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/auto-suggest/{tabId}",
+  "iface": "ISearchSuggestionsProtobufAPI",
+  "pkg": "in.swiggy.android.tejas.feature.search.api.suggestion",
+  "fn": "getPLSearchSuggestions"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/{pageID}",
+  "iface": "ISearchInlineAdsProtobufApi",
+  "pkg": "in.swiggy.android.tejas.feature.search.api.suggestion",
+  "fn": "evaluatePage"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/json/{pageID}",
+  "iface": "ISearchInlineAdsJsonApi",
+  "pkg": "in.swiggy.android.tejas.feature.search.api.suggestion",
+  "fn": "evaluatePageJson"
+ },
+ {
+  "method": "POST",
+  "path": "api/v3/search/dish-add",
+  "iface": "ISearchMoreOptionsProtoApi",
+  "pkg": "in.swiggy.android.tejas.feature.search.api.dishadd",
+  "fn": "getMoreOptionsFromRestaurant"
+ },
+ {
+  "method": "POST",
+  "path": "api/v3/json/search/dish-add",
+  "iface": "ISearchMoreOptionsJsonApi",
+  "pkg": "in.swiggy.android.tejas.feature.search.api.dishadd",
+  "fn": "getMoreOptionsFromRestaurant"
+ },
+ {
+  "method": "GET",
+  "path": "signed-url/upload/voice-directions",
+  "iface": "a",
+  "pkg": "in.swiggy.android.tejas.feature.voiceDirections.api",
+  "fn": "d"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v3/app/shell_login_check",
+  "iface": "IShellLoginApi",
+  "pkg": "in.swiggy.android.tejas.feature.auth.api",
+  "fn": "shellLoginCheck"
+ },
+ {
+  "method": "POST",
+  "path": "api/v2/app/login/verify",
+  "iface": "IOtpVerifyApi",
+  "pkg": "in.swiggy.android.tejas.feature.auth.api",
+  "fn": "verifyOtp"
+ },
+ {
+  "method": "POST",
+  "path": "api/v3/app/login/verify",
+  "iface": "IOtpVerifyApi",
+  "pkg": "in.swiggy.android.tejas.feature.auth.api",
+  "fn": "verifyOtpV3"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/unified-entity",
+  "iface": "IPageSkeletonAPI",
+  "pkg": "in.swiggy.android.tejas.feature.discovery.pageskeleton",
+  "fn": "getAggregatedPageSkeletonData"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/json/unified-entity",
+  "iface": "IPageSkeletonAPI",
+  "pkg": "in.swiggy.android.tejas.feature.discovery.pageskeleton",
+  "fn": "getAggregatedPageSkeletonDataJSON"
+ },
+ {
+  "method": "GET",
+  "path": "api/v1/skeleton",
+  "iface": "IPageSkeletonAPI",
+  "pkg": "in.swiggy.android.tejas.feature.discovery.pageskeleton",
+  "fn": "getPageSkeletonData"
+ },
+ {
+  "method": "GET",
+  "path": "api/v1/json/skeleton",
+  "iface": "IPageSkeletonAPI",
+  "pkg": "in.swiggy.android.tejas.feature.discovery.pageskeleton",
+  "fn": "getPageSkeletonDataJson"
+ },
+ {
+  "method": "POST",
+  "path": "/message-set",
+  "iface": "IMessageApi",
+  "pkg": "in.swiggy.android.tejas.feature.dataplatform.api",
+  "fn": "sendBulkMessage"
+ },
+ {
+  "method": "GET",
+  "path": "/client/metric/event/gtm",
+  "iface": "IMessageApi",
+  "pkg": "in.swiggy.android.tejas.feature.dataplatform.api",
+  "fn": "sendGTMEvent"
+ },
+ {
+  "method": "POST",
+  "path": "/message",
+  "iface": "IMessageApi",
+  "pkg": "in.swiggy.android.tejas.feature.dataplatform.api",
+  "fn": "sendMessage"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/instamart/print_preview",
+  "iface": "IPrintApi",
+  "pkg": "in.swiggy.android.tejas.feature.print.api",
+  "fn": "requestPreviewDocData"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/referral/intrigue",
+  "iface": "IGiftIntrigueApi",
+  "pkg": "in.swiggy.android.tejas.feature.referee.api",
+  "fn": "giftIntrigueApi"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/referral/reveal",
+  "iface": "IGiftRevealApi",
+  "pkg": "in.swiggy.android.tejas.feature.referee.api",
+  "fn": "revealOffer"
+ },
+ {
+  "method": "PUT",
+  "path": "v1/cancel-only/order/{orderId}",
+  "iface": "ICancelOnlyApi",
+  "pkg": "in.swiggy.android.tejas.feature.cancellation",
+  "fn": "cancelOnly"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/layout-section/{sectionId}",
+  "iface": "IRelevanceAPI",
+  "pkg": "in.swiggy.android.tejas.feature.relevance",
+  "fn": "getRelevantItems"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/json/layout-section/{sectionId}",
+  "iface": "IRelevanceAPI",
+  "pkg": "in.swiggy.android.tejas.feature.relevance",
+  "fn": "getRelevantJsonItems"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v2/help/issues",
+  "iface": "IOrderHelpAPI",
+  "pkg": "in.swiggy.android.tejas.feature.orderhelp",
+  "fn": "getHelpSupport"
+ },
+ {
+  "method": "GET",
+  "path": "/address/recommend",
+  "iface": "IRecommendsApi",
+  "pkg": "in.swiggy.android.tejas.feature.recommends",
+  "fn": "getRecommedsListFromLatlng"
+ },
+ {
+  "method": "GET",
+  "path": "/address/homepage",
+  "iface": "IRecommendsApi",
+  "pkg": "in.swiggy.android.tejas.feature.recommends",
+  "fn": "getRecommendsListFromHomePageApi"
+ },
+ {
+  "method": "GET",
+  "path": "/address/recommend",
+  "iface": "IKmmRecommendsApi",
+  "pkg": "in.swiggy.android.tejas.feature.recommends",
+  "fn": "getRecommedsListFromLatlng"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v2/home/json",
+  "iface": "IDiscoveryJsonApi",
+  "pkg": "in.swiggy.android.tejas.feature.home",
+  "fn": "getHomeListing"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/launch-configs",
+  "iface": "ILaunchConfigAPI",
+  "pkg": "in.swiggy.android.tejas.feature.home.launchconfig",
+  "fn": "getLaunchConfigData"
+ },
+ {
+  "method": "PUT",
+  "path": "api/v1/profiling/attributes",
+  "iface": "ISignalAPI",
+  "pkg": "in.swiggy.android.tejas.feature.home.signal",
+  "fn": "callSignalAPI"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/instamart/relay-vendor-order",
+  "iface": "IRelayVendorApi",
+  "pkg": "in.swiggy.android.tejas.feature.relayvendor.api",
+  "fn": "callRelayVendorApi"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/instamart/relay-verification-order",
+  "iface": "IRelayVendorApi",
+  "pkg": "in.swiggy.android.tejas.feature.relayvendor.api",
+  "fn": "callRelayVerificationOrderApi"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/cloned-user/whitelist",
+  "iface": "IClonedAppWhiteListApi",
+  "pkg": "in.swiggy.android.tejas.feature.appBlocking.api",
+  "fn": "requestForWhiteList"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/cloned-user/whitelist",
+  "iface": "IClonedAppWhitelistJsonApi",
+  "pkg": "in.swiggy.android.tejas.feature.appBlocking.api",
+  "fn": "requestForWhiteList"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/ratings/order",
+  "iface": "IEdmApi",
+  "pkg": "in.swiggy.android.tejas.feature.edm",
+  "fn": "postEdmRating"
+ },
+ {
+  "method": "POST",
+  "path": "api/v3/app/signup",
+  "iface": "ISignUpApi",
+  "pkg": "in.swiggy.android.tejas.feature.signup.api",
+  "fn": "signUpUser"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/item_collection/{collection_id}",
+  "iface": "IMenuItemCollection",
+  "pkg": "in.swiggy.android.tejas.feature.menu",
+  "fn": "getItemCollection"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/item_collection/json/{collection_id}",
+  "iface": "IMenuItemCollection",
+  "pkg": "in.swiggy.android.tejas.feature.menu",
+  "fn": "getItemCollectionJson"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/user/favorite",
+  "iface": "IFavouriteAPI",
+  "pkg": "in.swiggy.android.tejas.feature.menu",
+  "fn": "markFavourite"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/layout-section/{sectionId}",
+  "iface": "IMenuListingAPI",
+  "pkg": "in.swiggy.android.tejas.feature.menu",
+  "fn": "getCrossSellItems"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/json/layout-section/{sectionId}",
+  "iface": "IMenuListingAPI",
+  "pkg": "in.swiggy.android.tejas.feature.menu",
+  "fn": "getCrossSellJsonItems"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v2/dynamicmenu/{restaurantId}",
+  "iface": "IMenuListingAPI",
+  "pkg": "in.swiggy.android.tejas.feature.menu",
+  "fn": "getDynamicMenuListing"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v2/menu/{restaurantId}",
+  "iface": "IMenuListingAPI",
+  "pkg": "in.swiggy.android.tejas.feature.menu",
+  "fn": "getMenuListing"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v2/resolve/menu/{restaurantName}",
+  "iface": "IMenuListingAPI",
+  "pkg": "in.swiggy.android.tejas.feature.menu",
+  "fn": "getResolveMenuListing"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/menu/search/json",
+  "iface": "IMenuListingAPI",
+  "pkg": "in.swiggy.android.tejas.feature.menu",
+  "fn": "getSearchJsonListing"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/menu/search",
+  "iface": "IMenuListingAPI",
+  "pkg": "in.swiggy.android.tejas.feature.menu",
+  "fn": "getSearchListing"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v2/staticmenu/{restaurantId}",
+  "iface": "IMenuListingAPI",
+  "pkg": "in.swiggy.android.tejas.feature.menu",
+  "fn": "getStaticMenuListing"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/user/dislike",
+  "iface": "IDislikeApi",
+  "pkg": "in.swiggy.android.tejas.feature.menu.explicitsignals",
+  "fn": "markDislike"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v4/restaurant/otheroutlets/{restaurantId}",
+  "iface": "IOldOutletSelectorApi",
+  "pkg": "in.swiggy.android.tejas.feature.menu.outletselector",
+  "fn": "getOldOutletSelectorList"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/json/layout-section/{sectionId}",
+  "iface": "IOutletSelectorApi",
+  "pkg": "in.swiggy.android.tejas.feature.menu.outletselector",
+  "fn": "getOutletSelectorsJsonList"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/layout-section/{sectionId}",
+  "iface": "IOutletSelectorApi",
+  "pkg": "in.swiggy.android.tejas.feature.menu.outletselector",
+  "fn": "getOutletSelectorsList"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/restaurant/brand/{brandId}",
+  "iface": "IBrandApi",
+  "pkg": "in.swiggy.android.tejas.feature.menu.swiggydirect.api",
+  "fn": "getRestaurantID"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/delete/user",
+  "iface": "IProfileApi",
+  "pkg": "in.swiggy.android.tejas.feature.user",
+  "fn": "deleteUser"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/delete/user_check",
+  "iface": "IProfileApi",
+  "pkg": "in.swiggy.android.tejas.feature.user",
+  "fn": "deleteUserCheck"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/user/manage_consent",
+  "iface": "IProfileApi",
+  "pkg": "in.swiggy.android.tejas.feature.user",
+  "fn": "manageConsent"
+ },
+ {
+  "method": "GET",
+  "path": "api/v3/user/profile",
+  "iface": "IProfileApi",
+  "pkg": "in.swiggy.android.tejas.feature.user",
+  "fn": "refreshProfile"
+ },
+ {
+  "method": "GET",
+  "path": "api/v4/user/profile",
+  "iface": "IProfileApi",
+  "pkg": "in.swiggy.android.tejas.feature.user",
+  "fn": "refreshProfileV4"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/config/preLaunch",
+  "iface": "IPreLaunchAPI",
+  "pkg": "in.swiggy.android.tejas.feature.launch.prelaunch",
+  "fn": "getPreLaunchData"
+ },
+ {
+  "method": "GET",
+  "path": "api/v1/order-job/{order_id}/refund",
+  "iface": "IDashRefundDetailsApi",
+  "pkg": "in.swiggy.android.tejas.feature.order.refund.api",
+  "fn": "getDashRefundDetails"
+ },
+ {
+  "method": "GET",
+  "path": "checkout-service/external/order/{orderId}/refundStatus",
+  "iface": "IRefundDetailsApi",
+  "pkg": "in.swiggy.android.tejas.feature.order.refund.api",
+  "fn": "getRefundDetails"
+ },
+ {
+  "method": "PATCH",
+  "path": "user/v1/transactions/refunds/ack",
+  "iface": "IRefundDetailsApi",
+  "pkg": "in.swiggy.android.tejas.feature.order.refund.api",
+  "fn": "updateRefundFeedback"
+ },
+ {
+  "method": "GET",
+  "path": "api/v1/account/orders",
+  "iface": "IOrderHistoryProtoAPI",
+  "pkg": "in.swiggy.android.tejas.feature.order.history",
+  "fn": "getGiftingOrderHistory"
+ },
+ {
+  "method": "GET",
+  "path": "api/v1/json/account/orders",
+  "iface": "IOrderHistoryJsonAPI",
+  "pkg": "in.swiggy.android.tejas.feature.order.history",
+  "fn": "getGiftingOrderHistory"
+ },
+ {
+  "method": "GET",
+  "path": "",
+  "iface": "a",
+  "pkg": "in.swiggy.android.tejas.feature.dynamicwidget.network.api",
+  "fn": "a"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/layout-section/CROSS_SELL",
+  "iface": "ICrossSellAPI",
+  "pkg": "in.swiggy.android.tejas.feature.crosssell",
+  "fn": "getCrossSellCollection"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/json/layout-section/CROSS_SELL",
+  "iface": "ICrossSellAPI",
+  "pkg": "in.swiggy.android.tejas.feature.crosssell",
+  "fn": "getCrossSellCollectionJSON"
+ },
+ {
+  "method": "POST",
+  "path": "api/v3/app/login/call_verification_status",
+  "iface": "IRequestOtpApi",
+  "pkg": "in.swiggy.android.tejas.feature.otprequest.api",
+  "fn": "fetchCallVerificationStatus"
+ },
+ {
+  "method": "POST",
+  "path": "api/v3/app/request_call_verification",
+  "iface": "IRequestOtpApi",
+  "pkg": "in.swiggy.android.tejas.feature.otprequest.api",
+  "fn": "requestCallVerification"
+ },
+ {
+  "method": "GET",
+  "path": "api/v3/app/sms_otp",
+  "iface": "IRequestOtpApi",
+  "pkg": "in.swiggy.android.tejas.feature.otprequest.api",
+  "fn": "requestSmsOtp"
+ },
+ {
+  "method": "POST",
+  "path": "api/v3/app/whatsapp_otp",
+  "iface": "IRequestOtpApi",
+  "pkg": "in.swiggy.android.tejas.feature.otprequest.api",
+  "fn": "requestWhatsappOtp"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v4/help/conversations?conversationStatus=open",
+  "iface": "IChatV2Api",
+  "pkg": "in.swiggy.android.tejas.feature.chathead.api",
+  "fn": "fetchActiveChats"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v3/help/conversations?conversationStatus=open",
+  "iface": "IChatApi",
+  "pkg": "in.swiggy.android.tejas.feature.chathead.api",
+  "fn": "getChatDetails"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/json/aggregated-entity/{pageIdentifier}",
+  "iface": "IAggregatedEntityAPI",
+  "pkg": "in.swiggy.android.tejas.feature.aggregratedEntity",
+  "fn": "getAggregatedEntityJson"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/aggregated-entity/{pageIdentifier}",
+  "iface": "IAggregatedEntityAPI",
+  "pkg": "in.swiggy.android.tejas.feature.aggregratedEntity",
+  "fn": "getAggregatedEntityProto"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/config/settings",
+  "iface": "ISettingsApi",
+  "pkg": "in.swiggy.android.tejas.feature.settings.api",
+  "fn": "getSettingsResponse"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/cross-pollination/update-engagement",
+  "iface": "a",
+  "pkg": "in.swiggy.android.tejas.feature.crosspollination",
+  "fn": "a"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v2/offer",
+  "iface": "IOfferV2API",
+  "pkg": "in.swiggy.android.tejas.feature.offers",
+  "fn": "getV2CouponList"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v2/offer/json",
+  "iface": "IOfferV2API",
+  "pkg": "in.swiggy.android.tejas.feature.offers",
+  "fn": "getV2CouponListJSON"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v3/BUSINESS_LINE_DINEOUT/offer",
+  "iface": "IOfferV3DineoutAPI",
+  "pkg": "in.swiggy.android.tejas.feature.offers",
+  "fn": "getV3DineoutCouponList"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v3/BUSINESS_LINE_DINEOUT/offer/json",
+  "iface": "IOfferV3DineoutAPI",
+  "pkg": "in.swiggy.android.tejas.feature.offers",
+  "fn": "getV3DineoutCouponListJSON"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/offer",
+  "iface": "IOffersApi",
+  "pkg": "in.swiggy.android.tejas.feature.offers",
+  "fn": "getOfferDetail"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/getUserConsent",
+  "iface": "IUserConsentAPI",
+  "pkg": "in.swiggy.android.tejas.feature.userConsent.api",
+  "fn": "getUserConsent"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/v1/userConsent",
+  "iface": "IUserConsentAPI",
+  "pkg": "in.swiggy.android.tejas.feature.userConsent.api",
+  "fn": "updateUserConsent"
+ },
+ {
+  "method": "GET",
+  "path": "api/v1/landing-page/POST_SIGNUP",
+  "iface": "IGiftRevealPostSignupApi",
+  "pkg": "in.swiggy.android.tejas.feature.giftreveal.postsignup",
+  "fn": "giftPostSignUp"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/reward",
+  "iface": "IGiftRevealRewardApi",
+  "pkg": "in.swiggy.android.tejas.feature.giftreveal.reward",
+  "fn": "giftReward"
+ },
+ {
+  "method": "GET",
+  "path": "api/v1/location_based_features",
+  "iface": "ILocationBasedFeatureAPI",
+  "pkg": "in.swiggy.android.tejas.feature.locationbased",
+  "fn": "getLocationBasedFeatures"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/scratch-card/assign",
+  "iface": "IRewardOfferApi",
+  "pkg": "in.swiggy.android.tejas.feature.scratchcards.api",
+  "fn": "assignRewardOffer"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/scratch-card/unlock",
+  "iface": "IRewardOfferApi",
+  "pkg": "in.swiggy.android.tejas.feature.scratchcards.api",
+  "fn": "unlockRewardOffer"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/user/usersignal",
+  "iface": "IDineoutFavouriteApi",
+  "pkg": "in.swiggy.android.tejas.commons.feature.dineout.favourite",
+  "fn": "callFavApi"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/instaprint/batch-generate-pre-signed-upload-url",
+  "iface": "IPrintApi",
+  "pkg": "in.swiggy.android.tejas.print.api",
+  "fn": "generatePreSignedURL"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/instaprint/batch-validate-document",
+  "iface": "IPrintApi",
+  "pkg": "in.swiggy.android.tejas.print.api",
+  "fn": "validateDocument"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/dash/oms/order/{orderJobId}/context/ORDER_JOB",
+  "iface": "IDashPaymentApi",
+  "pkg": "in.swiggy.android.tejas.payment",
+  "fn": "getOrderByJobId"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/payment/presentation/client/callback/confirmTransaction",
+  "iface": "IDashPaymentApi",
+  "pkg": "in.swiggy.android.tejas.payment",
+  "fn": "makeConfirmPayment"
+ },
+ {
+  "method": "GET",
+  "path": "api/v1/user/paytmwallet/check_balance",
+  "iface": "IPaymentApi",
+  "pkg": "in.swiggy.android.tejas.payment",
+  "fn": "checkPaytmBalance"
+ },
+ {
+  "method": "POST",
+  "path": "api/v2/order/confirm",
+  "iface": "IPaymentApi",
+  "pkg": "in.swiggy.android.tejas.payment",
+  "fn": "confirmOrder"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/cards/juspay",
+  "iface": "IPaymentApi",
+  "pkg": "in.swiggy.android.tejas.payment",
+  "fn": "deleteCard"
+ },
+ {
+  "method": "DELETE",
+  "path": "payment/presentation/api/v1/upi/delete",
+  "iface": "IPaymentApi",
+  "pkg": "in.swiggy.android.tejas.payment",
+  "fn": "deleteSavedVpa"
+ },
+ {
+  "method": "GET",
+  "path": "/payment/presentation/api/juspaywallets/v2/getCustomerAuthToken",
+  "iface": "IPaymentApi",
+  "pkg": "in.swiggy.android.tejas.payment",
+  "fn": "getAuthTokenForJuspayV2"
+ },
+ {
+  "method": "GET",
+  "path": "/daily/orderpl/v1/get",
+  "iface": "IPaymentApi",
+  "pkg": "in.swiggy.android.tejas.payment",
+  "fn": "getOrderByJobIdDaily"
+ },
+ {
+  "method": "GET",
+  "path": "api/paylater/paytm/v1/isLinked",
+  "iface": "IPaymentApi",
+  "pkg": "in.swiggy.android.tejas.payment",
+  "fn": "isPaytmPostPaidLinked"
+ },
+ {
+  "method": "GET",
+  "path": "api/v1/user/paytmwallet/sso_token",
+  "iface": "IPaymentApi",
+  "pkg": "in.swiggy.android.tejas.payment",
+  "fn": "paytmSSOToken"
+ },
+ {
+  "method": "DELETE",
+  "path": "/payment/presentation/v1/refunds/clearNotification",
+  "iface": "IRefundsAPI",
+  "pkg": "in.swiggy.android.tejas.payment",
+  "fn": "removeRefundsNotification"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v3/juspay/get-customer-auth-token",
+  "iface": "IPaymentV2Api",
+  "pkg": "in.swiggy.android.tejas.payment",
+  "fn": "getAuthTokenForJuspayV3"
+ },
+ {
+  "method": "GET",
+  "path": "api/v2/help/conversations",
+  "iface": "g",
+  "pkg": "in.swiggy.android.tejas.apiServices",
+  "fn": "a"
+ },
+ {
+  "method": "GET",
+  "path": "api/v2/help/issues/order",
+  "iface": "g",
+  "pkg": "in.swiggy.android.tejas.apiServices",
+  "fn": "b"
+ },
+ {
+  "method": "GET",
+  "path": "api/v3/help/conversations",
+  "iface": "g",
+  "pkg": "in.swiggy.android.tejas.apiServices",
+  "fn": "c"
+ },
+ {
+  "method": "POST",
+  "path": "api/v2/ratings/create",
+  "iface": "g",
+  "pkg": "in.swiggy.android.tejas.apiServices",
+  "fn": "d"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/app/logout",
+  "iface": "h",
+  "pkg": "in.swiggy.android.tejas.apiServices",
+  "fn": "a"
+ },
+ {
+  "method": "POST",
+  "path": "api/v2/app/signup",
+  "iface": "h",
+  "pkg": "in.swiggy.android.tejas.apiServices",
+  "fn": "b"
+ },
+ {
+  "method": "GET",
+  "path": "api/v2/app/call_otp",
+  "iface": "h",
+  "pkg": "in.swiggy.android.tejas.apiServices",
+  "fn": "c"
+ },
+ {
+  "method": "PUT",
+  "path": "api/v1/user/profile",
+  "iface": "h",
+  "pkg": "in.swiggy.android.tejas.apiServices",
+  "fn": "d"
+ },
+ {
+  "method": "PUT",
+  "path": "api/v1/user/mobile/otpverify",
+  "iface": "h",
+  "pkg": "in.swiggy.android.tejas.apiServices",
+  "fn": "e"
+ },
+ {
+  "method": "GET",
+  "path": "api/v2/app/login_check",
+  "iface": "h",
+  "pkg": "in.swiggy.android.tejas.apiServices",
+  "fn": "f"
+ },
+ {
+  "method": "GET",
+  "path": "api/v2/app/sms_otp",
+  "iface": "h",
+  "pkg": "in.swiggy.android.tejas.apiServices",
+  "fn": "g"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/config/settings",
+  "iface": "h",
+  "pkg": "in.swiggy.android.tejas.apiServices",
+  "fn": "getSettingsResponse"
+ },
+ {
+  "method": "GET",
+  "path": "api/v3/app/sms_otp",
+  "iface": "h",
+  "pkg": "in.swiggy.android.tejas.apiServices",
+  "fn": "h"
+ },
+ {
+  "method": "GET",
+  "path": "api/v3/user/profile",
+  "iface": "h",
+  "pkg": "in.swiggy.android.tejas.apiServices",
+  "fn": "refreshProfile"
+ },
+ {
+  "method": "GET",
+  "path": "api/v4/user/profile",
+  "iface": "h",
+  "pkg": "in.swiggy.android.tejas.apiServices",
+  "fn": "refreshProfileV4"
+ },
+ {
+  "method": "GET",
+  "path": "",
+  "iface": "d",
+  "pkg": "in.swiggy.android.tejas.apiServices",
+  "fn": "a"
+ },
+ {
+  "method": "GET",
+  "path": "api/v1/dash/oms/order/history",
+  "iface": "c",
+  "pkg": "in.swiggy.android.tejas.apiServices",
+  "fn": "a"
+ },
+ {
+  "method": "GET",
+  "path": "user/v1/transactions/refunds/active/count",
+  "iface": "a",
+  "pkg": "in.swiggy.android.tejas.apiServices",
+  "fn": "a"
+ },
+ {
+  "method": "DELETE",
+  "path": "api/v2/cart/client/flush",
+  "iface": "a",
+  "pkg": "in.swiggy.android.tejas.apiServices",
+  "fn": "c"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/order/history",
+  "iface": "b",
+  "pkg": "in.swiggy.android.tejas.apiServices",
+  "fn": "a"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/v1/review",
+  "iface": "IRatingSubmitApi",
+  "pkg": "in.swiggy.android.tejas.rating",
+  "fn": "postSubmitRating"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/review/meta",
+  "iface": "IRatingApi",
+  "pkg": "in.swiggy.android.tejas.rating",
+  "fn": "getReviewsMeta"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/review/dismiss",
+  "iface": "IRatingDismissApi",
+  "pkg": "in.swiggy.android.tejas.rating",
+  "fn": "dismissRating"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v4/order/edit",
+  "iface": "IEditOrderApi",
+  "pkg": "in.swiggy.android.tejas.deliveryInstructions.api",
+  "fn": "updateDeliveryInstructions"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/pre-select",
+  "iface": "IPreSelectApi",
+  "pkg": "in.swiggy.android.tejas.im.preselect",
+  "fn": "preSelect"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v2/view/clear-cart?cartType=INSTAMART",
+  "iface": "IInstamartApi",
+  "pkg": "in.swiggy.android.tejas.im.feature",
+  "fn": "clearInstamartCart"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v2/view?cartType=INSTAMART",
+  "iface": "IInstamartApi",
+  "pkg": "in.swiggy.android.tejas.im.feature",
+  "fn": "getInstamartCart"
+ },
+ {
+  "method": "POST",
+  "path": "api/v2/view/INSTAMART?pageType=INSTAMART_CART",
+  "iface": "IInstamartApi",
+  "pkg": "in.swiggy.android.tejas.im.feature",
+  "fn": "getInstamartCartWithLayoutDetails"
+ },
+ {
+  "method": "POST",
+  "path": "api/v2/view/INSTAMART?pageType=INSTAMART_HOME",
+  "iface": "IInstamartApi",
+  "pkg": "in.swiggy.android.tejas.im.feature",
+  "fn": "updateCart"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/instamart/pass/activate",
+  "iface": "IPassApi",
+  "pkg": "in.swiggy.android.tejas.im.activatePass",
+  "fn": "activatePass"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/instamart/user-preferences/update",
+  "iface": "IUserPreferenceApi",
+  "pkg": "in.swiggy.android.tejas.im.userPrefrence",
+  "fn": "updateUserPreferences"
+ },
+ {
+  "method": "GET",
+  "path": "getlink/v1",
+  "iface": "IAddressDeepLinkApi",
+  "pkg": "in.swiggy.android.tejas.shareaddress.api",
+  "fn": "getAddressDeepLink"
+ },
+ {
+  "method": "POST",
+  "path": "api/v2/cart/client/update",
+  "iface": "ICheckoutClientCartApi",
+  "pkg": "in.swiggy.android.tejas.apiinterface",
+  "fn": "updateCart"
+ },
+ {
+  "method": "POST",
+  "path": "api/v2/cart/client/check_totals",
+  "iface": "ICheckoutClientCartApi",
+  "pkg": "in.swiggy.android.tejas.apiinterface",
+  "fn": "updateGuestCartMro"
+ },
+ {
+  "method": "POST",
+  "path": "analytics/transactional/device/add/",
+  "iface": "ISpnsApi",
+  "pkg": "in.swiggy.android.tejas.apiinterface",
+  "fn": "registerDeviceSPNS"
+ },
+ {
+  "method": "GET",
+  "path": "/address/recommend",
+  "iface": "d",
+  "pkg": "in.swiggy.android.compass.reverseGeocode",
+  "fn": "a"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/instamart/search-config",
+  "iface": "a",
+  "pkg": "in.swiggy.android.instamart.api",
+  "fn": "a"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/instamart/presearch",
+  "iface": "b",
+  "pkg": "in.swiggy.android.instamart.api",
+  "fn": "a"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/instamart/{pageId}",
+  "iface": "b",
+  "pkg": "in.swiggy.android.instamart.api",
+  "fn": "b"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v2/instamart/{pageID}",
+  "iface": "b",
+  "pkg": "in.swiggy.android.instamart.api",
+  "fn": "c"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/instamart/{pageID}",
+  "iface": "b",
+  "pkg": "in.swiggy.android.instamart.api",
+  "fn": "d"
+ },
+ {
+  "method": "GET",
+  "path": "api/v1/instamart/auto_suggest",
+  "iface": "b",
+  "pkg": "in.swiggy.android.instamart.api",
+  "fn": "f"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/instamart/{pageID}",
+  "iface": "b",
+  "pkg": "in.swiggy.android.instamart.api",
+  "fn": "g"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/instamart/complimentary_item",
+  "iface": "b",
+  "pkg": "in.swiggy.android.instamart.api",
+  "fn": "h"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/instamart/seo-product",
+  "iface": "b",
+  "pkg": "in.swiggy.android.instamart.api",
+  "fn": "k"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/instamart/product",
+  "iface": "b",
+  "pkg": "in.swiggy.android.instamart.api",
+  "fn": "l"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/instamart/{pageId}",
+  "iface": "b",
+  "pkg": "in.swiggy.android.instamart.api",
+  "fn": "m"
+ },
+ {
+  "method": "POST",
+  "path": "/message-set",
+  "iface": "a",
+  "pkg": "in.swiggy.android.services.perfprofiling",
+  "fn": "a"
+ },
+ {
+  "method": "GET",
+  "path": "",
+  "iface": "c",
+  "pkg": "in.swiggy.android.web.tejas.filedownload",
+  "fn": "a"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/user/upcoming-bookings",
+  "iface": "a",
+  "pkg": "in.swiggy.android.dobookinglist.api",
+  "fn": "a"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/user/upcoming-bookings/json",
+  "iface": "a",
+  "pkg": "in.swiggy.android.dobookinglist.api",
+  "fn": "b"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/app/screenshots/upload-urls",
+  "iface": "o",
+  "pkg": "in.swiggy.android.screenshotcapture.internal.upload",
+  "fn": "a"
+ },
+ {
+  "method": "POST",
+  "path": "/scenes/discovery/v1/event_user/profile_attribute/update",
+  "iface": "e",
+  "pkg": "in.swiggy.android.dineout.api",
+  "fn": "a"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v2/view/getBill/proto",
+  "iface": "d",
+  "pkg": "in.swiggy.android.dineout.api",
+  "fn": "a"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/dinersone-restaurant/json",
+  "iface": "d",
+  "pkg": "in.swiggy.android.dineout.api",
+  "fn": "b"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v2/view/getBill/json",
+  "iface": "d",
+  "pkg": "in.swiggy.android.dineout.api",
+  "fn": "c"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/dinersone-restaurant",
+  "iface": "d",
+  "pkg": "in.swiggy.android.dineout.api",
+  "fn": "d"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v2/view/DINEOUT",
+  "iface": "c",
+  "pkg": "in.swiggy.android.dineout.api",
+  "fn": "a"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/checkout/order",
+  "iface": "c",
+  "pkg": "in.swiggy.android.dineout.api",
+  "fn": "b"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/user/upcoming-bookings/json",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dineout.api",
+  "fn": "a"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/dineout_item_collection/{pageID}",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dineout.api",
+  "fn": "b"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/json/{pageID}",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dineout.api",
+  "fn": "c"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/{pageID}/json",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dineout.api",
+  "fn": "d"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/dineout_collection",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dineout.api",
+  "fn": "e"
+ },
+ {
+  "method": "GET",
+  "path": "api/dinersone/{pageID}",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dineout.api",
+  "fn": "f"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/json/dineout_collection",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dineout.api",
+  "fn": "g"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/{pageID}",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dineout.api",
+  "fn": "h"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/dineout_item_collection/json/{pageID}",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dineout.api",
+  "fn": "i"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/user/upcoming-bookings",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dineout.api",
+  "fn": "j"
+ },
+ {
+  "method": "GET",
+  "path": "api/dinersone/{pageID}/json",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dineout.api",
+  "fn": "k"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/overlays/poll",
+  "iface": "a",
+  "pkg": "in.swiggy.android.overlays.network",
+  "fn": "a"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/overlays",
+  "iface": "a",
+  "pkg": "in.swiggy.android.overlays.network",
+  "fn": "b"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v2/fetchNotification",
+  "iface": "a",
+  "pkg": "in.swiggy.android.nudgeFramework.network.api",
+  "fn": "a"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/gallerypage",
+  "iface": "a",
+  "pkg": "in.swiggy.android.donetwork.api",
+  "fn": "a"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/gallerypage/json",
+  "iface": "a",
+  "pkg": "in.swiggy.android.donetwork.api",
+  "fn": "b"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/dinersone-restaurant/json",
+  "iface": "b",
+  "pkg": "in.swiggy.android.donetwork.api",
+  "fn": "a"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/dinersone-restaurant",
+  "iface": "b",
+  "pkg": "in.swiggy.android.donetwork.api",
+  "fn": "b"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/json/chat_bot",
+  "iface": "a",
+  "pkg": "in.swiggy.android.donetwork.api.dochatbot",
+  "fn": "a"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/chat_bot",
+  "iface": "a",
+  "pkg": "in.swiggy.android.donetwork.api.dochatbot",
+  "fn": "b"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/ai/analyze",
+  "iface": "a",
+  "pkg": "in.swiggy.android.pnrscan.network",
+  "fn": "a"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/json/update_frequency_counter",
+  "iface": "c",
+  "pkg": "in.swiggy.android.cappingsdk.data",
+  "fn": "a"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/update_frequency_counter",
+  "iface": "c",
+  "pkg": "in.swiggy.android.cappingsdk.data",
+  "fn": "b"
+ },
+ {
+  "method": "POST",
+  "path": "api/v2/launch",
+  "iface": "e",
+  "pkg": "in.swiggy.android.launchApi.aggregated",
+  "fn": "a"
+ },
+ {
+  "method": "POST",
+  "path": "api/v2/launch",
+  "iface": "d",
+  "pkg": "in.swiggy.android.launchApi.aggregated",
+  "fn": "a"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/layout-section/{sectionId}",
+  "iface": "a",
+  "pkg": "in.swiggy.android.smart_filters.api",
+  "fn": "a"
+ },
+ {
+  "method": "POST",
+  "path": "api/v1/json/layout-section/{sectionId}",
+  "iface": "a",
+  "pkg": "in.swiggy.android.smart_filters.api",
+  "fn": "b"
+ },
+ {
+  "method": "POST",
+  "path": "/directions",
+  "iface": "a",
+  "pkg": "in.swiggy.android.track.viewmodels.v3.directions.api",
+  "fn": "a"
+ },
+ {
+  "method": "POST",
+  "path": "addresses/v1/nearby-eligible",
+  "iface": "c",
+  "pkg": "in.swiggy.android.track.addressUpdate.api",
+  "fn": "a"
+ },
+ {
+  "method": "GET",
+  "path": "v3/order/address-update-eligible",
+  "iface": "a",
+  "pkg": "in.swiggy.android.track.addressUpdate.api",
+  "fn": "a"
+ },
+ {
+  "method": "GET",
+  "path": "/v3/order/receiver-update-eligible",
+  "iface": "a",
+  "pkg": "in.swiggy.android.track.editreceiverdetails.repository.api",
+  "fn": "a"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v4/order/edit",
+  "iface": "b",
+  "pkg": "in.swiggy.android.track.editreceiverdetails.repository.api",
+  "fn": "a"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/widgets",
+  "iface": "a",
+  "pkg": "in.swiggy.android.track.v4.api",
+  "fn": "a"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/poll-widgets",
+  "iface": "a",
+  "pkg": "in.swiggy.android.track.v4.api",
+  "fn": "b"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v2/track/card",
+  "iface": "a",
+  "pkg": "in.swiggy.android.track.v4.api",
+  "fn": "c"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/widgets",
+  "iface": "b",
+  "pkg": "in.swiggy.android.track.v4.api",
+  "fn": "a"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/json/poll-widgets",
+  "iface": "b",
+  "pkg": "in.swiggy.android.track.v4.api",
+  "fn": "b"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v2/json/track/card",
+  "iface": "b",
+  "pkg": "in.swiggy.android.track.v4.api",
+  "fn": "c"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/digital-menu/customer/ordered-items",
+  "iface": "a",
+  "pkg": "in.swiggy.android.dodigitalmenu.api",
+  "fn": "a"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/digital-menu/user-session-configs/claim/json",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dodigitalmenu.api",
+  "fn": "a"
+ },
+ {
+  "method": "GET",
+  "path": "/api/dinersone/useronboarding",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dodigitalmenu.api",
+  "fn": "b"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/entity/ENTITY_DINEOUT_MENU/{restaurantId}/json",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dodigitalmenu.api",
+  "fn": "c"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/digital-menu/user-session-configs/claim",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dodigitalmenu.api",
+  "fn": "d"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/digital-menu/config/json",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dodigitalmenu.api",
+  "fn": "e"
+ },
+ {
+  "method": "GET",
+  "path": "/api/dinersone/useronboarding/json",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dodigitalmenu.api",
+  "fn": "f"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/layout-section/CROSS_SELL_DINEOUT",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dodigitalmenu.api",
+  "fn": "g"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/digital-menu/config",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dodigitalmenu.api",
+  "fn": "h"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v2/view/pin/proto",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dodigitalmenu.api",
+  "fn": "i"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/json/layout-section/CROSS_SELL_DINEOUT",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dodigitalmenu.api",
+  "fn": "j"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/quickActions/submit/json",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dodigitalmenu.api",
+  "fn": "k"
+ },
+ {
+  "method": "GET",
+  "path": "/api/v1/entity/ENTITY_DINEOUT_MENU/{restaurantId}",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dodigitalmenu.api",
+  "fn": "l"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v2/view/verify-pin/json",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dodigitalmenu.api",
+  "fn": "m"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/digital-menu/qr-scan",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dodigitalmenu.api",
+  "fn": "n"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/v1/digital-menu/user-session-configs/consent",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dodigitalmenu.api",
+  "fn": "o"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/digital-menu/qr-scan/json",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dodigitalmenu.api",
+  "fn": "p"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v1/quickActions/submit/proto",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dodigitalmenu.api",
+  "fn": "q"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v2/view/pin/json",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dodigitalmenu.api",
+  "fn": "r"
+ },
+ {
+  "method": "POST",
+  "path": "/api/v2/view/verify-pin/proto",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dodigitalmenu.api",
+  "fn": "s"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/v1/digital-menu/user-session-configs/consent/json",
+  "iface": "b",
+  "pkg": "in.swiggy.android.dodigitalmenu.api",
+  "fn": "t"
+ },
+ {
+  "method": "POST",
+  "path": "v1/deviceService/deviceData/android",
+  "iface": "f1",
+  "pkg": "defpackage",
+  "fn": "a"
+ },
+ {
+  "method": "POST",
+  "path": "topics/aws.msk.bureau.androidDeviceEvents",
+  "iface": "a",
+  "pkg": "com.bureau.analytics",
+  "fn": "a"
+ },
+ {
+  "method": "GET",
+  "path": "v1/deviceService/config",
+  "iface": "a",
+  "pkg": "com.bureau.backendconfig.network",
+  "fn": "a"
+ }
+]

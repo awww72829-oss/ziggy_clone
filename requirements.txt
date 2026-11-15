@@ -1,0 +1,6 @@
+pyTelegramBotAPI>=4.20.0
+requests>=2.31.0
+PySocks>=1.7.1
+urllib3>=2.0.0
+rich>=13.0.0
+

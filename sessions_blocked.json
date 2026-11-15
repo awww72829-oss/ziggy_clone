@@ -1,0 +1,832 @@
+[
+  {
+    "mobile": "9082796366",
+    "reason": "Number of login attempts exceeded. Please retry after 2 hours. | 9",
+    "blockedAt": "2026-11-15T07:57:34Z"
+  },
+  {
+    "mobile": "8279844604",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8279844604 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:32:29Z"
+  },
+  {
+    "mobile": "9368396184",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9368396184 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:32:29Z"
+  },
+  {
+    "mobile": "7359195585",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7359195585 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:32:29Z"
+  },
+  {
+    "mobile": "9203594611",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9203594611 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:32:29Z"
+  },
+  {
+    "mobile": "7217507401",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7217507401 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:32:32Z"
+  },
+  {
+    "mobile": "9528092392",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9528092392 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:32:57Z"
+  },
+  {
+    "mobile": "7043954155",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7043954155 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:34:10Z"
+  },
+  {
+    "mobile": "7558594467",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7558594467 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:34:10Z"
+  },
+  {
+    "mobile": "7339560022",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7339560022 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:34:10Z"
+  },
+  {
+    "mobile": "8045953754",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8045953754 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:34:10Z"
+  },
+  {
+    "mobile": "9193512199",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9193512199 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:34:10Z"
+  },
+  {
+    "mobile": "7906509336",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7906509336 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:34:10Z"
+  },
+  {
+    "mobile": "7897085664",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7897085664 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:34:10Z"
+  },
+  {
+    "mobile": "6312000839",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=6312000839 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:34:13Z"
+  },
+  {
+    "mobile": "9368395005",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9368395005 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:34:13Z"
+  },
+  {
+    "mobile": "9870686426",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9870686426 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:34:13Z"
+  },
+  {
+    "mobile": "9217185370",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9217185370 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:34:13Z"
+  },
+  {
+    "mobile": "8218734930",
+    "reason": "network: SOCKSHTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8218734930 (Caused by NewConne",
+    "blockedAt": "2026-11-15T08:35:47Z"
+  },
+  {
+    "mobile": "9714972452",
+    "reason": "network: SOCKSHTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9714972452 (Caused by NewConne",
+    "blockedAt": "2026-11-15T08:35:49Z"
+  },
+  {
+    "mobile": "8057873134",
+    "reason": "network: SOCKSHTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8057873134 (Caused by NewConne",
+    "blockedAt": "2026-11-15T08:35:51Z"
+  },
+  {
+    "mobile": "7417131915",
+    "reason": "network: SOCKSHTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7417131915 (Caused by NewConne",
+    "blockedAt": "2026-11-15T08:35:52Z"
+  },
+  {
+    "mobile": "6318236468",
+    "reason": "network: SOCKSHTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=6318236468 (Caused by NewConne",
+    "blockedAt": "2026-11-15T08:35:55Z"
+  },
+  {
+    "mobile": "7289954141",
+    "reason": "network: SOCKSHTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7289954141 (Caused by NewConne",
+    "blockedAt": "2026-11-15T08:35:55Z"
+  },
+  {
+    "mobile": "9991361241",
+    "reason": "network: SOCKSHTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9991361241 (Caused by NewConne",
+    "blockedAt": "2026-11-15T08:35:59Z"
+  },
+  {
+    "mobile": "7983907928",
+    "reason": "network: SOCKSHTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7983907928 (Caused by NewConne",
+    "blockedAt": "2026-11-15T08:36:02Z"
+  },
+  {
+    "mobile": "6395826638",
+    "reason": "network: SOCKSHTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=6395826638 (Caused by NewConne",
+    "blockedAt": "2026-11-15T08:36:06Z"
+  },
+  {
+    "mobile": "9506329641",
+    "reason": "network: SOCKSHTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9506329641 (Caused by NewConne",
+    "blockedAt": "2026-11-15T08:39:03Z"
+  },
+  {
+    "mobile": "8050258560",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8050258560 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:41Z"
+  },
+  {
+    "mobile": "6265719591",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=6265719591 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:41Z"
+  },
+  {
+    "mobile": "9238394724",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9238394724 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:41Z"
+  },
+  {
+    "mobile": "9725011334",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9725011334 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:41Z"
+  },
+  {
+    "mobile": "9770555102",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9770555102 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:41Z"
+  },
+  {
+    "mobile": "9243107133",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9243107133 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:41Z"
+  },
+  {
+    "mobile": "6268268934",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=6268268934 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:44Z"
+  },
+  {
+    "mobile": "7383087676",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7383087676 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:44Z"
+  },
+  {
+    "mobile": "9691343751",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9691343751 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:44Z"
+  },
+  {
+    "mobile": "7805917133",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7805917133 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:44Z"
+  },
+  {
+    "mobile": "6264727300",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=6264727300 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:44Z"
+  },
+  {
+    "mobile": "9644134761",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9644134761 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:44Z"
+  },
+  {
+    "mobile": "7387280328",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7387280328 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:46Z"
+  },
+  {
+    "mobile": "9913985868",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9913985868 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:46Z"
+  },
+  {
+    "mobile": "7723819803",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7723819803 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:46Z"
+  },
+  {
+    "mobile": "9630114494",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9630114494 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:46Z"
+  },
+  {
+    "mobile": "8815124122",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8815124122 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:46Z"
+  },
+  {
+    "mobile": "7057515160",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7057515160 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:46Z"
+  },
+  {
+    "mobile": "9165758665",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9165758665 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:48Z"
+  },
+  {
+    "mobile": "9979527412",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9979527412 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:49Z"
+  },
+  {
+    "mobile": "9201585691",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9201585691 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:49Z"
+  },
+  {
+    "mobile": "9202930778",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9202930778 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:49Z"
+  },
+  {
+    "mobile": "9202618741",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9202618741 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:49Z"
+  },
+  {
+    "mobile": "7489968198",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7489968198 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:49Z"
+  },
+  {
+    "mobile": "8817623583",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8817623583 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:51Z"
+  },
+  {
+    "mobile": "9425600091",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9425600091 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:51Z"
+  },
+  {
+    "mobile": "9893182928",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9893182928 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:51Z"
+  },
+  {
+    "mobile": "7828860638",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7828860638 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:51Z"
+  },
+  {
+    "mobile": "6265411606",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=6265411606 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:51Z"
+  },
+  {
+    "mobile": "6275633774",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=6275633774 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:53Z"
+  },
+  {
+    "mobile": "9244213431",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9244213431 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:53Z"
+  },
+  {
+    "mobile": "7898952093",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7898952093 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:54Z"
+  },
+  {
+    "mobile": "7804930293",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7804930293 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:54Z"
+  },
+  {
+    "mobile": "7932600411",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7932600411 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:54Z"
+  },
+  {
+    "mobile": "6642838035",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=6642838035 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:56Z"
+  },
+  {
+    "mobile": "8103373839",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8103373839 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:56Z"
+  },
+  {
+    "mobile": "6268320285",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=6268320285 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:56Z"
+  },
+  {
+    "mobile": "6232414538",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=6232414538 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:56Z"
+  },
+  {
+    "mobile": "7723952252",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7723952252 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:56Z"
+  },
+  {
+    "mobile": "9301356675",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9301356675 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:59Z"
+  },
+  {
+    "mobile": "7354925693",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7354925693 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:59Z"
+  },
+  {
+    "mobile": "9200200040",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9200200040 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:39:59Z"
+  },
+  {
+    "mobile": "9109826122",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9109826122 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:40:01Z"
+  },
+  {
+    "mobile": "8770975841",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8770975841 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:40:04Z"
+  },
+  {
+    "mobile": "8246509853",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8246509853 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:46:34Z"
+  },
+  {
+    "mobile": "7538037591",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7538037591 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:46:35Z"
+  },
+  {
+    "mobile": "8154673953",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8154673953 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:46:36Z"
+  },
+  {
+    "mobile": "6654763987",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=6654763987 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:46:37Z"
+  },
+  {
+    "mobile": "7922317889",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7922317889 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:46:38Z"
+  },
+  {
+    "mobile": "6651808913",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=6651808913 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:46:38Z"
+  },
+  {
+    "mobile": "8380483050",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8380483050 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:46:39Z"
+  },
+  {
+    "mobile": "9295554040",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9295554040 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:46:40Z"
+  },
+  {
+    "mobile": "7783501698",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7783501698 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:46:41Z"
+  },
+  {
+    "mobile": "6389257684",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=6389257684 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:46:42Z"
+  },
+  {
+    "mobile": "8569157405",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8569157405 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:46:42Z"
+  },
+  {
+    "mobile": "7130035108",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7130035108 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:46:43Z"
+  },
+  {
+    "mobile": "7884175325",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7884175325 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:46:44Z"
+  },
+  {
+    "mobile": "7941048943",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7941048943 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:46:45Z"
+  },
+  {
+    "mobile": "7275070736",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7275070736 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:46:45Z"
+  },
+  {
+    "mobile": "6473227821",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=6473227821 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:46:46Z"
+  },
+  {
+    "mobile": "8216713043",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8216713043 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:46:47Z"
+  },
+  {
+    "mobile": "8955194970",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8955194970 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:46:47Z"
+  },
+  {
+    "mobile": "9752255525",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9752255525 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:46:47Z"
+  },
+  {
+    "mobile": "7462194554",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7462194554 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:48:10Z"
+  },
+  {
+    "mobile": "7438906451",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7438906451 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:48:18Z"
+  },
+  {
+    "mobile": "9568110683",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9568110683 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:48:22Z"
+  },
+  {
+    "mobile": "8065417719",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8065417719 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:50:00Z"
+  },
+  {
+    "mobile": "7067910186",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7067910186 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:50:00Z"
+  },
+  {
+    "mobile": "8045684662",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8045684662 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:50:03Z"
+  },
+  {
+    "mobile": "9219855585",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9219855585 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:50:10Z"
+  },
+  {
+    "mobile": "6263216010",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=6263216010 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:50:10Z"
+  },
+  {
+    "mobile": "9161348367",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9161348367 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:50:10Z"
+  },
+  {
+    "mobile": "7800442411",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7800442411 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:50:12Z"
+  },
+  {
+    "mobile": "9250979820",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9250979820 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:50:13Z"
+  },
+  {
+    "mobile": "7393932623",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7393932623 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:50:14Z"
+  },
+  {
+    "mobile": "8095367010",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8095367010 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:50:20Z"
+  },
+  {
+    "mobile": "7975846674",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7975846674 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:50:20Z"
+  },
+  {
+    "mobile": "8217562145",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8217562145 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:50:20Z"
+  },
+  {
+    "mobile": "8277795990",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8277795990 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:50:22Z"
+  },
+  {
+    "mobile": "8431236125",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8431236125 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:50:22Z"
+  },
+  {
+    "mobile": "8660650782",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8660650782 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T08:50:22Z"
+  },
+  {
+    "mobile": "7984762592",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7984762592 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:13:12Z"
+  },
+  {
+    "mobile": "7720084247",
+    "reason": "Number of login attempts exceeded. Please retry after 2 hours. | 9",
+    "blockedAt": "2026-11-15T09:13:14Z"
+  },
+  {
+    "mobile": "9386941060",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9386941060 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:14:37Z"
+  },
+  {
+    "mobile": "9913247510",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9913247510 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:14:38Z"
+  },
+  {
+    "mobile": "7977540309",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7977540309 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:14:39Z"
+  },
+  {
+    "mobile": "6201557453",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=6201557453 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:14:46Z"
+  },
+  {
+    "mobile": "8956526101",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8956526101 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:14:49Z"
+  },
+  {
+    "mobile": "7549969257",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7549969257 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:14:50Z"
+  },
+  {
+    "mobile": "8926052524",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8926052524 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:14:53Z"
+  },
+  {
+    "mobile": "7973635291",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7973635291 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:16:23Z"
+  },
+  {
+    "mobile": "7047296661",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7047296661 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:16:23Z"
+  },
+  {
+    "mobile": "8235940158",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8235940158 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:16:23Z"
+  },
+  {
+    "mobile": "8894928177",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8894928177 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:16:23Z"
+  },
+  {
+    "mobile": "6611245227",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=6611245227 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:17:59Z"
+  },
+  {
+    "mobile": "7696433096",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7696433096 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:18:02Z"
+  },
+  {
+    "mobile": "9686457720",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9686457720 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:18:02Z"
+  },
+  {
+    "mobile": "7980894004",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7980894004 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:18:02Z"
+  },
+  {
+    "mobile": "7888726911",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7888726911 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:18:07Z"
+  },
+  {
+    "mobile": "9215676766",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9215676766 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:18:07Z"
+  },
+  {
+    "mobile": "8005928505",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8005928505 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:18:07Z"
+  },
+  {
+    "mobile": "9630990454",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9630990454 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:18:18Z"
+  },
+  {
+    "mobile": "6267367993",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=6267367993 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:18:18Z"
+  },
+  {
+    "mobile": "8655693266",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8655693266 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:18:20Z"
+  },
+  {
+    "mobile": "9399348543",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9399348543 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:18:20Z"
+  },
+  {
+    "mobile": "6679074897",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=6679074897 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:20:01Z"
+  },
+  {
+    "mobile": "9587051911",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9587051911 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:20:04Z"
+  },
+  {
+    "mobile": "8656097213",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8656097213 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:21:42Z"
+  },
+  {
+    "mobile": "7000711693",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7000711693 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:21:45Z"
+  },
+  {
+    "mobile": "7898163440",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7898163440 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:21:47Z"
+  },
+  {
+    "mobile": "9893418561",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9893418561 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:23:26Z"
+  },
+  {
+    "mobile": "9353891657",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9353891657 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:24:16Z"
+  },
+  {
+    "mobile": "7206844685",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7206844685 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:27:40Z"
+  },
+  {
+    "mobile": "9319616040",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9319616040 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:55:28Z"
+  },
+  {
+    "mobile": "9014015746",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9014015746 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:55:45Z"
+  },
+  {
+    "mobile": "7583875988",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7583875988 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:55:45Z"
+  },
+  {
+    "mobile": "9733163011",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9733163011 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:55:45Z"
+  },
+  {
+    "mobile": "8409880451",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8409880451 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:55:45Z"
+  },
+  {
+    "mobile": "8766920305",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8766920305 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:55:45Z"
+  },
+  {
+    "mobile": "6205160290",
+    "reason": "Number of login attempts exceeded. Please retry after 2 hours. | 9",
+    "blockedAt": "2026-11-15T09:55:46Z"
+  },
+  {
+    "mobile": "8827782639",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8827782639 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:55:48Z"
+  },
+  {
+    "mobile": "8709613042",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8709613042 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:55:48Z"
+  },
+  {
+    "mobile": "9122120083",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9122120083 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:55:49Z"
+  },
+  {
+    "mobile": "7061851002",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7061851002 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:55:58Z"
+  },
+  {
+    "mobile": "9243232121",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9243232121 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:57:21Z"
+  },
+  {
+    "mobile": "8389891948",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8389891948 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:57:21Z"
+  },
+  {
+    "mobile": "9508429533",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9508429533 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:57:23Z"
+  },
+  {
+    "mobile": "7856932898",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7856932898 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:57:24Z"
+  },
+  {
+    "mobile": "9644738687",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9644738687 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:57:24Z"
+  },
+  {
+    "mobile": "7209611012",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7209611012 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:57:26Z"
+  },
+  {
+    "mobile": "9289230209",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9289230209 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:57:26Z"
+  },
+  {
+    "mobile": "8839918846",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=8839918846 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:57:26Z"
+  },
+  {
+    "mobile": "9288004427",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=9288004427 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:57:28Z"
+  },
+  {
+    "mobile": "7980093595",
+    "reason": "network: HTTPSConnectionPool(host='profile.swiggy.com', port=443): Max retries exceeded with url: /api/v3/app/sms_otp?mobile=7980093595 (Caused by NewConnection",
+    "blockedAt": "2026-11-15T09:57:28Z"
+  },
+  {
+    "mobile": "9546549543",
+    "reason": "Number of login attempts exceeded. Please retry after 2 hours. | 9",
+    "blockedAt": "2026-11-15T10:28:21Z"
+  },
+  {
+    "mobile": "7418205092",
+    "reason": "Number of login attempts exceeded. Please retry after 2 hours. | 9",
+    "blockedAt": "2026-11-15T11:16:43Z"
+  },
+  {
+    "mobile": "8100600800",
+    "reason": "Number of login attempts exceeded. Please retry after 2 hours. | 9",
+    "blockedAt": "2026-11-15T12:01:50Z"
+  },
+  {
+    "mobile": "7861917217",
+    "reason": "Number of login attempts exceeded. Please retry after 2 hours. | 9",
+    "blockedAt": "2026-11-15T12:06:35Z"
+  }
+]

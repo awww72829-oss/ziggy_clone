@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Secrets — never commit
+bot_token.txt
+.env
+*.pem
+
+# Harvested data / runtime state
+sessions.json
+sessions_minimal.json
+swiggy_auto_log.json
+swiggy_store.json
+individual_sessions/
+summaries/
+
+# Target lists / proxy config
+panels.txt
+proxies.txt
+firebase_disabled.txt
+
+# Backups of the main source
+*.bak
+*.bak2
+*.bak.*

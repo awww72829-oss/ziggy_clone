@@ -1,0 +1,3799 @@
+﻿SWIGGY API REFERENCE - FOOD, INSTAMART, PAYMENTS, WALLET AND APP SERVICES
+Prepared: 30 October 2026
+Source: supplied Swiggy 4.120.1 APK (versionCode 1866), local bot code,
+previously saved Instamart MCP schema and official wallet web JavaScript.
+
+SCOPE: All Retrofit HTTP declarations in the supplied APK were scanned. This file
+includes all 367 declarations owned by Swiggy classes, plus API references found
+in the inspected bot and wallet sources. It is not Swiggy's complete internal API
+catalogue. Dynamically generated, native-only, encrypted or server-configured
+endpoints may not be discoverable here. Relative APK paths have no assumed host.
+
+No account cookies, OTPs, passwords, JWTs, device IDs, addresses or gift-card
+credentials are included. Placeholders such as {order_id} must be supplied at
+runtime. Query values are replaced with placeholders except a few route constants.
+No API calls, orders, payments, claims or account changes were made for this export.
+
+STATUS KEY:
+  LIVE-READ: Prior review recorded a successful read; not rechecked for this export.
+  IMPLEMENTED: Present in current code; does not prove a successful live mutation.
+  SCHEMA: Advertised by the saved tools/list result; not every tool was executed.
+  APK-STATIC: Method/path/parameter annotations found in this APK; runtime unverified.
+  CANDIDATE: Source literal/probe; HTTP method, host or availability may be unknown.
+
+CONTENTS:
+  1. Main services and authentication conventions
+  2. Instamart and wallet endpoints used by this project
+  3. Instamart MCP tools with full saved input schemas
+  4. Food MCP tools referenced by current code
+  5. Bot/web-source endpoint inventory with source locations
+  6. Full Swiggy APK Retrofit declarations with parameter annotations
+  7. Additional APK API-like strings, not confirmed contracts
+  8. Host literals, provenance and extraction limits
+
+========================================================================================
+1. MAIN SERVICES AND AUTHENTICATION CONVENTIONS
+========================================================================================
+
+https://www.swiggy.com     Web /dapi and /mapi routes
+https://mcp.swiggy.com     JSON-RPC: /food and /im
+https://dash.swiggy.com    Native Instamart cart routes used by this adapter
+https://chkout.swiggy.com  Native food cart, wallet and checkout routes
+https://payments.swiggy.com Payment transaction/order routes in current source
+https://disc.swiggy.com    Native restaurant menu route in current source
+https://profile.swiggy.com Native account profile route in current source
+https://events.swiggy.com  Campaign/offer site and notify route
+
+MCP transport:
+  HTTP POST, Content-Type: application/json
+  Accept: application/json, text/event-stream
+  Authorization: Bearer <authenticated account session>
+  Body for discovery: {"jsonrpc":"2.0","id":"example","method":"tools/list","params":{}}
+  Body for a call: {"jsonrpc":"2.0","id":"example","method":"tools/call",
+                   "params":{"name":"<tool_name>","arguments":{}}}
+  Responses can be JSON or SSE. Match the response ID and handle result.isError.
+
+Native cart/wallet headers used by the project:
+  tid, sid, token, userId/userid, deviceId, platform, Content-Type, Accept.
+  Instamart native cart also uses agent-type, User-Agent, version-code, app-version.
+  Header names are documented; all credential values are deliberately omitted.
+Web DAPI uses the account cookie session and request-specific web headers.
+These are observed conventions, not proof every endpoint uses identical headers.
+
+========================================================================================
+2. INSTAMART AND WALLET ENDPOINTS USED BY THIS PROJECT
+========================================================================================
+
+POST https://mcp.swiggy.com/im
+  Status: SCHEMA / IMPLEMENTED; selected reads LIVE-READ
+  Purpose: Instamart JSON-RPC tools/list and tools/call. Full schemas in section 3.
+  Source: swiggy-review/instamart/provider.js
+
+GET https://dash.swiggy.com/api/v2/view?cartType=INSTAMART
+  Status: LIVE-READ / IMPLEMENTED
+  Purpose: Read current native Instamart cart, including cart state behind a serviceability error.
+  Source: swiggy-review/instamart/native-cart.js
+
+POST https://dash.swiggy.com/api/v2/view/INSTAMART?pageType=INSTAMART_CART
+  Status: IMPLEMENTED; coupon mutation fixture-tested
+  Purpose: Native cart layout/update used for supported coupon changes; no live coupon success established in the review.
+  Source: swiggy-review/instamart/native-cart.js
+
+GET https://chkout.swiggy.com/payment/presentation/v1/swiggypay/getbalance
+  Status: LIVE-READ / IMPLEMENTED
+  Purpose: Read Swiggy Money. Spendable value is balancePresenter.available, distinct from pending/total.
+  Source: swiggy-review/instamart/wallet.js
+
+GET https://chkout.swiggy.com/payment/add-money/v1/order/transaction/eligibility
+  Status: LIVE-READ / IMPLEMENTED
+  Purpose: Read wallet/gift-card eligibility; do not infer eligibility from a displayed balance alone.
+  Source: swiggy-review/instamart/wallet.js
+
+PATCH https://chkout.swiggy.com/swiggymoney/voucher/claim
+  Status: IMPLEMENTED; no real card redeemed in review
+  Purpose: Body: {"code":"XXXX-XXXX-XXXX-XXXX","secret":"<6-digit PIN>"}. Confirm statusCode=0 and positive data.value, then refresh balance.
+  Source: swiggy-review/instamart/wallet.js
+
+Native Instamart cart POST body fields used by this adapter:
+  cartType: INSTAMART
+  items[]: itemId, productId, spin, quantity, serviceLine, meta
+  location: latitude, longitude
+  cartMetaData: couponCode, preferredAddressId, primaryStoreId, storeIds,
+                deliveryType, consents and applicable delivery/consent flags.
+  Values come from the current account/cart/address; this is a field guide,
+  not a valid standalone checkout request. Preserve the selected pack SPIN/SKU.
+
+Other official wallet bundle path constants (HTTP method not established here):
+  /payment/add-money/v1/order/offers
+  /payment/presentation/v1/swiggypay/statement
+  /payment/presentation/v1/refund/getDefault
+  /payment/presentation/v1/refund/setDefault
+  Source: swiggy-review/.local-run/payment-review/wallet-1-7.js
+
+FREE CASH: No working Free Cash claim contract was established by this review.
+A /dapi/rewards/claim reference or a Free Cash UI/model string is not evidence
+that a current promotion can be claimed. Wallet gift-card redemption is a
+separate operation and does not create Free Cash.
+
+========================================================================================
+3. INSTAMART MCP TOOLS - FULL SAVED INPUT SCHEMAS
+========================================================================================
+
+Transport for every tool below: POST https://mcp.swiggy.com/im
+RPC method: tools/call; params: {name: <tool name>, arguments: <schema object>}
+Source: swiggy-review/.local-run/instamart-tool-schema.json
+All tool names below are SCHEMA evidence from the saved provider response.
+Schema defaults and enums below are copied, not invented.
+
+MCP-01 get_addresses
+  Description: Swiggy (Instamart/Food): Get saved delivery addresses in recommended display order. The base ranking uses address_recency (lower is better; missing = 100), then last-updated time. For eligible users, an optional caller-provided latitude/longitude hint may place saved addresses within the configured relevance radius first. Ranking never auto-selects an address. Saved-address coordinates are never exposed. Authentication is handled automatically.
+  Project allowlist: included
+  Prior review: a live read was recorded for this operation.
+  Provider hints: {"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true, "openWorldHint": false}
+  inputSchema:
+{
+  "type": "object",
+  "properties": {
+    "page": {
+      "type": "number",
+      "description": "Page number for pagination, 1-based (default: 1)",
+      "default": 1
+    },
+    "pageSize": {
+      "type": "number",
+      "description": "Number of addresses per page (default: 10, max: 10)",
+      "default": 10
+    },
+    "explicitAddressId": {
+      "type": "string",
+      "description": "Optional saved address ID requested in the current user turn. It takes precedence over selectedAddressId; use only an ID previously returned by get_addresses."
+    },
+    "selectedAddressId": {
+      "type": "string",
+      "description": "Optional saved address ID selected earlier in this conversation/widget flow. Used for continuity only when the current turn has no explicit address request."
+    },
+    "latitude": {
+      "type": "number",
+      "description": "Optional current latitude supplied by the client context. Pass only when the client provides it; never infer it or ask the user to type it. Must be paired with longitude."
+    },
+    "longitude": {
+      "type": "number",
+      "description": "Optional current longitude supplied by the client context. Pass only when the client provides it; never infer it or ask the user to type it. Must be paired with latitude."
+    }
+  },
+  "required": []
+}
+
+MCP-02 create_address
+  Description: Swiggy (Instamart/Food): Create a new delivery address for the authenticated user.
+  Project allowlist: included
+  Provider hints: {"readOnlyHint": false, "destructiveHint": false, "idempotentHint": false, "openWorldHint": false}
+  inputSchema:
+{
+  "type": "object",
+  "properties": {
+    "fullAddress": {
+      "type": "string",
+      "description": "Complete address as provided by the user"
+    },
+    "addressLine": {
+      "type": "string",
+      "description": "Main street/building/house number (REQUIRED)"
+    },
+    "addressLine2": {
+      "type": "string",
+      "description": "Apartment, floor, wing, or additional details (REQUIRED - extract from full address, use empty string \"\" if not found)"
+    },
+    "locality": {
+      "type": "string",
+      "description": "Area, neighborhood, or locality name (optional)"
+    },
+    "city": {
+      "type": "string",
+      "description": "City name (REQUIRED)"
+    },
+    "postalCode": {
+      "type": "string",
+      "description": "Postal/ZIP code (REQUIRED)"
+    },
+    "latitude": {
+      "type": "number",
+      "description": "Latitude coordinate of the address (optional - auto-resolved from address if omitted)"
+    },
+    "longitude": {
+      "type": "number",
+      "description": "Longitude coordinate of the address (optional - auto-resolved from address if omitted)"
+    },
+    "addressCategory": {
+      "type": "string",
+      "enum": [
+        "HOME",
+        "WORK",
+        "OFFICE",
+        "FRIENDS_AND_FAMILY",
+        "OTHER"
+      ],
+      "description": "Type of address: HOME, WORK, OFFICE, FRIENDS_AND_FAMILY, or OTHER (REQUIRED)"
+    },
+    "addressTag": {
+      "type": "string",
+      "description": "Friendly name/label for the address (e.g., \"My Home\", \"Office\", \"Mom's Place\") (optional)"
+    },
+    "userName": {
+      "type": "string",
+      "description": "Account holder name (authenticated user) (REQUIRED)"
+    },
+    "userPhone": {
+      "type": "string",
+      "description": "Account holder phone number (authenticated user) (REQUIRED)"
+    },
+    "receiverName": {
+      "type": "string",
+      "description": "Receiver name if delivering to someone else (optional)"
+    },
+    "receiverPhone": {
+      "type": "string",
+      "description": "Receiver phone if delivering to someone else (optional)"
+    }
+  },
+  "required": [
+    "fullAddress",
+    "addressLine",
+    "addressLine2",
+    "city",
+    "postalCode",
+    "addressCategory",
+    "userName",
+    "userPhone"
+  ]
+}
+
+MCP-03 delete_address
+  Description: Swiggy (Instamart/Food): Delete a saved delivery address for the authenticated user.
+  Project allowlist: not currently exposed by this adapter
+  Provider hints: {"readOnlyHint": false, "destructiveHint": true, "idempotentHint": true, "openWorldHint": false}
+  inputSchema:
+{
+  "type": "object",
+  "properties": {
+    "addressId": {
+      "type": "string",
+      "description": "The ID of the address to delete (from get_addresses response)"
+    }
+  },
+  "required": [
+    "addressId"
+  ]
+}
+
+MCP-04 search_products
+  Description: Search for products available at an address or guest coordinates. Returns products with variants (e.g., different pack sizes, quantities). For guest mode, pass latitude and longitude; for signed-in mode, use addressId from get_addresses. When adding a product, ALWAYS search first and ask the user which variant they want.
+  Project allowlist: included
+  Prior review: a live read was recorded for this operation.
+  Provider hints: {"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true, "openWorldHint": false}
+  inputSchema:
+{
+  "type": "object",
+  "properties": {
+    "addressId": {
+      "type": "string",
+      "description": "REQUIRED: Address ID obtained from get_addresses tool. You MUST call get_addresses first to get this value. Do NOT invent or guess addressId values.",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[A-Za-z0-9_-]+$"
+    },
+    "latitude": {
+      "type": "number",
+      "description": "Guest mode: delivery latitude (-90 to 90)."
+    },
+    "longitude": {
+      "type": "number",
+      "description": "Guest mode: delivery longitude (-180 to 180)."
+    },
+    "query": {
+      "type": "string",
+      "description": "REQUIRED: Search query (product name, category, or brand). Cannot be empty.",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "offset": {
+      "type": "number",
+      "description": "Pagination offset (default: 0)",
+      "minimum": 0,
+      "maximum": 10000
+    }
+  },
+  "required": [
+    "query"
+  ]
+}
+
+MCP-05 your_go_to_items
+  Description: Fetch the user's Your Go To Items (frequently or recently ordered items) for the selected delivery address. Use addressId from get_addresses. Returns products with variants; pass BOTH spinId and skuId from the chosen variant when adding to cart via update_cart.
+  Project allowlist: included
+  Provider hints: {"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true, "openWorldHint": false}
+  inputSchema:
+{
+  "type": "object",
+  "properties": {
+    "addressId": {
+      "type": "string",
+      "description": "Address ID from get_addresses tool"
+    },
+    "offset": {
+      "type": "number",
+      "description": "Pagination offset (default: 0)"
+    }
+  },
+  "required": [
+    "addressId"
+  ]
+}
+
+MCP-06 get_cart
+  Description: Swiggy Instamart (Grocery): Get current Swiggy Instamart grocery cart with all items and bill breakdown. Use this for Instamart grocery orders, NOT for Food delivery. Authentication is handled automatically.
+  Project allowlist: included
+  Prior review: a live read was recorded for this operation.
+  Provider hints: {"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true, "openWorldHint": false}
+  inputSchema:
+{
+  "type": "object",
+  "properties": {},
+  "required": []
+}
+
+MCP-07 update_cart
+  Description: Swiggy Instamart (Grocery): Update grocery items in the cart. Supply the complete desired grocery item list. Signed-in users use selectedAddressId; guest users use latitude and longitude. Pass skuId, spinId, and quantity from search_products. If a cart update is unconfirmed, call get_cart before retrying.
+  Project allowlist: included
+  Provider hints: {"readOnlyHint": false, "destructiveHint": true, "idempotentHint": false, "openWorldHint": false}
+  inputSchema:
+{
+  "type": "object",
+  "properties": {
+    "selectedAddressId": {
+      "type": "string",
+      "description": "Selected delivery address ID from get_addresses tool"
+    },
+    "latitude": {
+      "type": "number",
+      "description": "Guest mode delivery latitude (-90 to 90)."
+    },
+    "longitude": {
+      "type": "number",
+      "description": "Guest mode delivery longitude (-180 to 180)."
+    },
+    "items": {
+      "type": "array",
+      "description": "Complete desired grocery item list; must contain at least one item. Omit a grocery item to remove it.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "spinId": {
+            "type": "string",
+            "description": "Product SPIN ID from search results"
+          },
+          "skuId": {
+            "type": "string",
+            "description": "Optional product SKU ID from search results"
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Quantity of the item (minimum 1). To remove an item from the cart, omit it from the items array instead of sending 0."
+          }
+        },
+        "required": [
+          "spinId",
+          "quantity"
+        ]
+      }
+    }
+  },
+  "required": [
+    "items"
+  ]
+}
+
+MCP-08 clear_cart
+  Description: Clear (remove all items from) the Instamart cart. Authentication is handled automatically.
+  Project allowlist: included
+  Provider hints: {"readOnlyHint": false, "destructiveHint": true, "idempotentHint": true, "openWorldHint": false}
+  inputSchema:
+{
+  "type": "object",
+  "properties": {},
+  "required": []
+}
+
+MCP-09 checkout
+  Description: Swiggy Instamart (Grocery): Place and confirm a Swiggy Instamart order from the current cart. Use this for Instamart orders, NOT for Food delivery.
+  Project allowlist: included
+  Provider hints: {"readOnlyHint": false, "destructiveHint": true, "idempotentHint": false, "openWorldHint": false}
+  inputSchema:
+{
+  "type": "object",
+  "properties": {
+    "addressId": {
+      "type": "string",
+      "description": "Delivery address ID (from get_addresses - user must have selected this address)"
+    },
+    "paymentMethod": {
+      "type": "string",
+      "description": "Payment method GROUP, not an app id. Use one of: \"UPI\", \"Cash\"/\"COD\", \"SwiggyPay\". For a UPI app selection pass paymentMethod=\"UPI\" and put the app id in `intentApp` — do NOT put the app id (e.g. \"gpay://upi/\") here. Use the method the user selected. Auto-defaults to the user's available method if omitted."
+    },
+    "intentApp": {
+      "type": "string",
+      "description": "The selected UPI app id (e.g. \"gpay://upi/\"), copied EXACTLY from the chosen UPI method id. Only set this together with paymentMethod=\"UPI\". Leave blank for Cash/COD/QR."
+    },
+    "generateUPIQR": {
+      "type": "boolean",
+      "description": "Set true only when the current cart's live payment options include a desktop QR method with id PayWithQR, pay_with_qr or qr (case-insensitive); otherwise leave blank. get_cart does not determine QR availability."
+    },
+    "confirmDuplicate": {
+      "type": "boolean",
+      "description": "Leave blank on the first attempt. Set true ONLY when a previous checkout was rejected as a probable duplicate AND that rejection explicitly told you to re-checkout with confirmDuplicate AND the user has since confirmed they want the order anyway. If the rejection said not to retry — a payment still processing, or a confirmation already refused — do not set this. Never set it on your own initiative, and never to retry a failed or timed-out checkout, that is how a customer gets charged twice."
+    }
+  },
+  "required": [
+    "addressId"
+  ]
+}
+
+MCP-10 get_orders
+  Description: Swiggy Instamart order history - Use this to fetch ORDER HISTORY, past orders, or order preferences. Use this FIRST when user asks: "show my orders", "get my orders", "my last order", "order history", "past orders", "recent orders", "list my orders", "what did I order before", "my previous orders", "check my past orders", "my order preferences", "get preferences from past orders", "what do I usually order", "my frequent items", "reorder", "order again", "buy the same thing", "what groceries did I buy", "my purchase history", "items I bought before". Returns a list of orders from the last 15 days with basic details including items, status, and delivery address coordinates. Set activeOnly=true when user asks for active/current/ongoing orders: "active orders", "current orders", "ongoing orders", "pending orders", "in-progress orders", "orders on the way", "orders being delivered", "my current deliveries". For REAL-TIME TRACKING of a specific order (where is my order, track my order, ETA, delivery partner location), use the track_order tool instead - it requires orderId and coordinates which can be obtained from this tool. Authentication is handled automatically. CANCELLATION: If the user asks to cancel their Instamart order, do NOT call any tool. Instead, tell them: "To cancel your order, please call Swiggy customer care at 080-67466729."
+  Project allowlist: included
+  Provider hints: {"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true, "openWorldHint": false}
+  inputSchema:
+{
+  "type": "object",
+  "properties": {
+    "count": {
+      "type": "number",
+      "description": "Number of orders to fetch (default: 10, max recommended: 20)"
+    },
+    "orderType": {
+      "type": "string",
+      "description": "Order type filter (e.g., \"DASH\", \"INSTAMART\"). Default: \"DASH\""
+    },
+    "activeOnly": {
+      "type": "boolean",
+      "description": "Set to true to filter only active/ongoing orders. Default: false (returns all orders)"
+    }
+  },
+  "required": []
+}
+
+MCP-11 track_order
+  Description: Track Swiggy Instamart order status in real-time. PRIMARY TOOL for order tracking - Use this FIRST when user asks: "where is my order", "track my order", "order status", "what's the status of my order", "when will my order arrive", "ETA for my order", "is my order on the way", "has my order been delivered", "track order", "check order status", or any query about a specific order's current status. Returns real-time tracking info including: current status, ETA, delivery partner location, store info, delivery address, items ordered, and payment details. Requires orderId and delivery address coordinates. If user doesn't provide orderId, first use get_orders to find the order, then use this tool to track it.
+  Project allowlist: included
+  Provider hints: {"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true, "openWorldHint": false}
+  inputSchema:
+{
+  "type": "object",
+  "properties": {
+    "orderId": {
+      "type": "string",
+      "description": "The order ID to track (required). Can be obtained from get_orders tool."
+    },
+    "lat": {
+      "type": "number",
+      "description": "Latitude of the delivery address (required for accurate tracking)"
+    },
+    "lng": {
+      "type": "number",
+      "description": "Longitude of the delivery address (required for accurate tracking)"
+    }
+  },
+  "required": [
+    "orderId",
+    "lat",
+    "lng"
+  ]
+}
+
+MCP-12 get_delivery_status
+  Description: Internal: live delivery ETA for the order-success widget (not for conversational use). The success card calls this on a poll interval with orderId + addressId; returns an absolute deliveryBy epoch + suggested poll cadence. Gated by IM_LIVE_ETA. Prefer track_order for user-facing "where is my order" queries.
+  Project allowlist: not currently exposed by this adapter
+  Provider hints: {"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true, "openWorldHint": false}
+  inputSchema:
+{
+  "type": "object",
+  "properties": {
+    "orderId": {
+      "type": "string",
+      "description": "Order ID to fetch the delivery ETA for (required)."
+    },
+    "addressId": {
+      "type": "string",
+      "description": "Delivery address ID for the order (required; coords resolved server-side)."
+    }
+  },
+  "required": [
+    "orderId",
+    "addressId"
+  ]
+}
+
+MCP-13 report_error
+  Description: Generate an error report to share with the Swiggy MCP team. Use this when the user encounters an error and wants to report it. Returns a pre-filled mailto: link and a human-readable summary. The user can click the link to open their email client with the report ready to send. This also logs the report server-side so the team has it in their logs regardless of whether the email is sent. IMPORTANT: Always include toolContext with the specific identifiers from the failed tool call — e.g., orderId, restaurantId, addressId, spinId, menu_item_id, couponCode, query, cartId, slotId, paymentMethod. Include whichever IDs were part of the failed request so the team can trace the exact issue.
+  Project allowlist: not currently exposed by this adapter
+  Provider hints: {"readOnlyHint": false, "destructiveHint": false, "idempotentHint": true, "openWorldHint": false}
+  inputSchema:
+{
+  "type": "object",
+  "properties": {
+    "tool": {
+      "type": "string",
+      "description": "Name of the tool that errored (e.g., \"checkout\", \"search_products\", \"place_food_order\")"
+    },
+    "domain": {
+      "type": "string",
+      "description": "Domain prefix where the error occurred (e.g., \"im\", \"food\", \"dineout\"). Auto-detected if not provided."
+    },
+    "errorMessage": {
+      "type": "string",
+      "description": "The error message the user saw"
+    },
+    "flowDescription": {
+      "type": "string",
+      "description": "Brief description of what the user was doing (e.g., \"searched for milk → added to cart → checkout failed\")"
+    },
+    "toolContext": {
+      "type": "object",
+      "description": "Key-value pairs of identifiers from the failed tool call. Include ALL relevant IDs such as: orderId, restaurantId, addressId, spinId, menu_item_id, couponCode, query, cartId, slotId, paymentMethod, guestCount, itemId — whichever were part of the request that failed.",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "userNotes": {
+      "type": "string",
+      "description": "Any additional notes or context the user wants to share"
+    }
+  },
+  "required": [
+    "tool",
+    "errorMessage"
+  ]
+}
+
+MCP-14 get_payment_options
+  Description: Fetch live payment options for the current cart. The live list will not include UPI methods if the user isn't yet eligible for UPI payments, or if UPI is temporarily unavailable for this business line.
+  Project allowlist: included
+  Prior review: a live read was recorded for this operation.
+  Provider hints: {"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true, "openWorldHint": false}
+  inputSchema:
+{
+  "type": "object",
+  "properties": {
+    "cartAmount": {
+      "type": "number",
+      "description": "Deprecated. Ignored — server reads amount from the live response."
+    },
+    "addressId": {
+      "type": "string",
+      "description": "Food only: pass the same addressId you used for get_food_cart. It is echoed back so the payment picker widget can place the order directly. Recommended for Food UPI."
+    }
+  }
+}
+
+MCP-15 check_payment_status
+  Description: Check status of an in-flight UPI payment (one status read).
+  Project allowlist: included
+  Provider hints: {"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true, "openWorldHint": false}
+  inputSchema:
+{
+  "type": "object",
+  "properties": {
+    "paasId": {
+      "type": "string",
+      "description": "The payment TRANSACTION id from the place-order/checkout response (response field \"paasId\", e.g. a long numeric/alphanumeric id). NOT the payment-method name — never pass \"PayWithQR\", \"UPI\", \"UPIIntent\", or an app package id here. If you do not have a real paasId, do not call this tool; re-read the checkout response which contains paasId + orderId."
+    },
+    "orderId": {
+      "type": "string",
+      "description": "orderId from the place-order/checkout response. IM: pass it so the widget can auto-confirm on SUCCESS. Food: echo from place_food_order."
+    },
+    "addressId": {
+      "type": "string",
+      "description": "Food only: echo from place_food_order — passed through for auto-confirm."
+    },
+    "cartId": {
+      "type": "string",
+      "description": "Food only: echo from place_food_order — passed through for auto-confirm."
+    },
+    "lat": {
+      "type": "number",
+      "description": "Food only: if place_food_order's response included lat/lng, echo them here (passed through for auto-confirm). If the response omitted them, do NOT pass or estimate lat/lng — delivery coordinates are resolved server-side from addressId and any value you pass is ignored."
+    },
+    "lng": {
+      "type": "number",
+      "description": "Food only: if place_food_order's response included lat/lng, echo them here (passed through for auto-confirm). If the response omitted them, do NOT pass or estimate lat/lng — delivery coordinates are resolved server-side from addressId and any value you pass is ignored."
+    },
+    "finalize": {
+      "type": "boolean",
+      "description": "INTERNAL — set by the widget at the 5-min polling cap to finalize the order (confirm) even if still pending. Do NOT set this yourself."
+    }
+  },
+  "required": [
+    "paasId"
+  ]
+}
+
+MCP-16 confirm_order
+  Description: Finalize a pre-PLACED order to PLACED state. ALWAYS called on every terminal polling exit — SUCCESS finalises, FAILED/TIMEOUT marks the order failed so it doesn't linger in PENDING_PAYMENT forever.
+  Project allowlist: included
+  Provider hints: {"readOnlyHint": false, "destructiveHint": true, "idempotentHint": true, "openWorldHint": false}
+  inputSchema:
+{
+  "type": "object",
+  "properties": {
+    "orderId": {
+      "type": "string",
+      "description": "Order ID returned by the place-order tool."
+    },
+    "transactionId": {
+      "type": "string",
+      "description": "Transaction ID returned by the place-order tool (IM/Dineout only)."
+    },
+    "paasId": {
+      "type": "string",
+      "description": "Payment transaction ID returned by the place-order tool (IM/Dineout only)."
+    },
+    "addressId": {
+      "type": "string",
+      "description": "Address ID — REQUIRED for Food. Echo from place_food_order response."
+    },
+    "cartId": {
+      "type": "string",
+      "description": "Cart ID — optional but recommended for Food. Echo from place_food_order response."
+    },
+    "lat": {
+      "type": "number",
+      "description": "Food only: if place_food_order's response included lat/lng, echo them here (they are passed to the delivery backend). If the response omitted them, do NOT pass or estimate lat/lng — delivery coordinates are resolved server-side from addressId and any value you pass is ignored."
+    },
+    "lng": {
+      "type": "number",
+      "description": "Food only: if place_food_order's response included lat/lng, echo them here (they are passed to the delivery backend). If the response omitted them, do NOT pass or estimate lat/lng — delivery coordinates are resolved server-side from addressId and any value you pass is ignored."
+    }
+  },
+  "required": [
+    "orderId"
+  ]
+}
+
+
+========================================================================================
+4. FOOD MCP TOOLS REFERENCED BY CURRENT CODE
+========================================================================================
+
+Transport: POST https://mcp.swiggy.com/food (same JSON-RPC envelope).
+These are IMPLEMENTED call-site references, not a complete food tools/list schema.
+
+apply_food_coupon
+  Call-site argument keys: addressId, couponCode
+  Sources: swiggy-review/swiggy-cart.js:5961
+
+create_address
+  Call-site argument keys: addressCategory, addressLine, addressLine2, addressTag, city, fullAddress, latitude, locality, longitude, postalCode, receiverName, receiverPhone, userName, userPhone
+  Sources: swiggy-review/swiggy-cart.js:5149
+
+fetch_food_coupons
+  Call-site argument keys: addressId, restaurantId
+  Sources: swiggy-review/swiggy-cart.js:6520
+
+get_addresses
+  Call-site argument keys: (no literal keys at these call sites)
+  Sources: swiggy-review/swiggy-cart.js:4832
+
+get_food_cart
+  Call-site argument keys: addressId
+  Sources: swiggy-review/swiggy-cart.js:6526
+
+get_restaurant_menu
+  Call-site argument keys: latitude, longitude, page, pageSize, restaurantId
+  Sources: swiggy-review/swiggy-cart.js:6288
+
+
+========================================================================================
+5. BOT / WEB-SOURCE ENDPOINT INVENTORY
+========================================================================================
+
+HTTP verbs come from static call sites when resolvable. UNKNOWN/DYNAMIC means
+the method was not established. Source presence alone does not prove the
+endpoint works; this section includes legacy attempts and speculative probes.
+Relative literals have an unresolved base host unless documented above.
+Request-field/header lists are only literal keys visible at the call site;
+shared builders and conditional keys may add further fields.
+
+SRC-001 UNKNOWN /api/campaign/details?slug={slug}
+  Evidence: literal
+  Sources: swiggy-review/event-offers.js:380
+
+SRC-002 UNKNOWN /api/campaign/{slug}
+  Evidence: literal
+  Sources: swiggy-review/event-offers.js:379
+
+SRC-003 UNKNOWN /api/campaign?slug={slug}
+  Evidence: literal
+  Sources: swiggy-review/event-offers.js:381
+
+SRC-004 UNKNOWN /api/campaigns?slug={slug}
+  Evidence: literal
+  Sources: swiggy-review/event-offers.js:382
+
+SRC-005 UNKNOWN /api/notify/campaign/{slug}
+  Evidence: literal
+  Sources: swiggy-review/event-offers.js:383
+
+SRC-006 UNKNOWN /payment/add-money/v1/order/offers
+  Evidence: literal
+  Sources: swiggy-review/.local-run/payment-review/wallet-1-7.js:1
+
+SRC-007 UNKNOWN /payment/add-money/v1/order/transaction/eligibility
+  Evidence: literal
+  Sources: swiggy-review/.local-run/payment-review/wallet-1-7.js:1; swiggy-review/instamart/wallet.js:7
+
+SRC-008 UNKNOWN /payment/presentation/v1/refund/getDefault
+  Evidence: literal
+  Sources: swiggy-review/.local-run/payment-review/wallet-1-7.js:1
+
+SRC-009 UNKNOWN /payment/presentation/v1/refund/setDefault
+  Evidence: literal
+  Sources: swiggy-review/.local-run/payment-review/wallet-1-7.js:1
+
+SRC-010 UNKNOWN /payment/presentation/v1/swiggypay/getbalance
+  Evidence: literal
+  Sources: swiggy-review/.local-run/payment-review/wallet-1-7.js:1; swiggy-review/instamart/wallet.js:6
+
+SRC-011 UNKNOWN /payment/presentation/v1/swiggypay/statement
+  Evidence: literal
+  Sources: swiggy-review/.local-run/payment-review/wallet-1-7.js:1
+
+SRC-012 UNKNOWN /swiggymoney/voucher/claim
+  Evidence: literal
+  Sources: swiggy-review/.local-run/payment-review/wallet-1-7.js:1; swiggy-review/instamart/wallet.js:8
+
+SRC-013 UNKNOWN cart/applyCoupon
+  Evidence: literal
+  Sources: swiggy-review/swiggy-cart.js:6009
+
+SRC-014 UNKNOWN cart/flush
+  Evidence: literal
+  Sources: swiggy-review/swiggy-cart.js:954
+
+SRC-015 UNKNOWN cart/removeCoupon
+  Evidence: literal
+  Sources: swiggy-review/swiggy-cart.js:6009
+
+SRC-016 POST https://chkout.swiggy.com/api/v1/shared_cart/join
+  Evidence: fetch
+  Sources: swiggy-review/swiggy-cart.js:1684
+  bodyFields: group_cart_id, restaurant_id, user_id
+
+SRC-017 GET https://chkout.swiggy.com/api/v1/shared_cart?group_cart_id={group_cart_id}
+  Evidence: fetch
+  Sources: swiggy-review/swiggy-cart.js:1713
+
+SRC-018 GET https://chkout.swiggy.com/api/v2/cart/client
+  Evidence: androidCheckoutCartCall, fetch, fetchImpl
+  Sources: swiggy-review/offer-claim-doctor.js:303; swiggy-review/swiggy-bridge.js:569; swiggy-review/swiggy-cart.js:1274; swiggy-review/swiggy-cart.js:466; swiggy-review/swiggy-cart.js:5599; swiggy-review/swiggy-cart.js:708; swiggy-review/swiggy-cart.js:865
+  headers: Accept, User-Agent, app-version, os-version, version-code
+
+SRC-019 POST https://chkout.swiggy.com/api/v2/cart/client/applycoupon
+  Evidence: androidCheckoutCartCall
+  Sources: swiggy-review/swiggy-cart.js:5963
+
+SRC-020 DELETE https://chkout.swiggy.com/api/v2/cart/client/flush
+  Evidence: androidCheckoutCartCall
+  Sources: swiggy-review/swiggy-cart.js:949
+
+SRC-021 POST https://chkout.swiggy.com/api/v2/cart/client/removecoupon
+  Evidence: androidCheckoutCartCall
+  Sources: swiggy-review/swiggy-cart.js:5963
+
+SRC-022 POST https://chkout.swiggy.com/api/v2/cart/client/update
+  Evidence: androidCheckoutCartCall
+  Sources: swiggy-review/swiggy-cart.js:892
+  bodyFields: address_id, cartItems, couponCode, flushFirst, mealItems, restaurantId, subscriptionItems
+
+SRC-023 DYNAMIC https://chkout.swiggy.com/api/v2/cart/{endpointPath}
+  Evidence: fetch
+  Sources: swiggy-review/swiggy-cart.js:836
+
+SRC-024 UNKNOWN https://chkout.swiggy.com/api/v2/cart/{endpointPath}
+  Evidence: literal
+  Sources: swiggy-review/swiggy-cart.js:836
+
+SRC-025 POST https://chkout.swiggy.com/api/v2/order/place
+  Evidence: fetch
+  Sources: swiggy-review/swiggy-cart.js:8939; swiggy-review/swiggy-cart.js:8965
+
+SRC-026 POST https://dash.swiggy.com/api/v2/view/INSTAMART?pageType=INSTAMART_CART
+  Evidence: fetchImpl
+  Sources: swiggy-review/instamart/native-cart.js:42
+  headers: Accept, Content-Type, User-Agent, agent-type, app-version, platform, sid, tid, token, userid, version-code
+
+SRC-027 GET https://dash.swiggy.com/api/v2/view?cartType=INSTAMART
+  Evidence: fetchImpl
+  Sources: swiggy-review/instamart/native-cart.js:42
+  headers: Accept, Content-Type, User-Agent, agent-type, app-version, platform, sid, tid, token, userid, version-code
+
+SRC-028 GET https://disc.swiggy.com/api/v1/menu/pl?page-type=REGULAR_MENU&complete-menu={complete-menu}&lat={lat}&lng={lng}&restaurantId={restaurantId}&submitAction={submitAction}
+  Evidence: fetch
+  Sources: swiggy-review/swiggy-cart.js:2601
+
+SRC-029 PATCH https://events.swiggy.com/api/notify
+  Evidence: fetch, fetchImpl
+  Sources: swiggy-review/event-offers.js:735; swiggy-review/event-offers.js:773; swiggy-review/offer-claim-doctor.js:532; swiggy-review/swiggy-bridge.js:715; swiggy-review/swiggy-bridge.js:734
+  headers: Referer
+  bodyFields: campaign, value
+
+SRC-030 POST https://events.swiggy.com/api/notify
+  Evidence: fetch, fetchImpl
+  Sources: swiggy-review/event-offers.js:735; swiggy-review/offer-claim-doctor.js:532; swiggy-review/swiggy-bridge.js:715
+  headers: Referer
+  bodyFields: campaign, value
+
+SRC-031 GET https://events.swiggy.com/api/notify?campaign={campaign}
+  Evidence: fetch, fetchImpl
+  Sources: swiggy-review/event-offers.js:645; swiggy-review/offer-claim-doctor.js:359; swiggy-review/swiggy-bridge.js:690; swiggy-review/swiggy-bridge.js:834
+
+SRC-032 POST https://mcp.swiggy.com/food
+  Evidence: fetch
+  Sources: swiggy-review/swiggy-cart.js:1306; swiggy-review/swiggy-cart.js:1364
+  headers: Accept, Authorization, Content-Type
+  bodyFields: id, jsonrpc, method, params
+
+SRC-033 POST https://mcp.swiggy.com/im
+  Evidence: fetchImpl
+  Sources: swiggy-review/instamart/provider.js:80
+  headers: Accept, Authorization, Content-Type
+  bodyFields: id, jsonrpc, method, params
+
+SRC-034 POST https://payments.swiggy.com/api/v3/order/confirm?order_id={order_id}
+  Evidence: fetch
+  Sources: swiggy-review/swiggy-cart.js:10043
+  bodyFields: order_id, transaction_id
+
+SRC-035 POST https://payments.swiggy.com/api/v3/order/place
+  Evidence: fetch
+  Sources: swiggy-review/swiggy-cart.js:9053
+
+SRC-036 POST https://payments.swiggy.com/api/v3/update-cart
+  Evidence: fetch
+  Sources: swiggy-review/swiggy-cart.js:6460
+  bodyFields: address_id, cartItems, couponCode, flushFirst, mealItems, restaurantId, subscriptionItems
+
+SRC-037 GET https://payments.swiggy.com/api/v3/vpa-txn-status?paas_id={paas_id}&payment_code={payment_code}
+  Evidence: fetch
+  Sources: swiggy-review/swiggy-cart.js:10027
+
+SRC-038 GET https://profile.swiggy.com/api/v1/user/profile
+  Evidence: fetch
+  Sources: swiggy-review/swiggy-cart.js:431
+
+SRC-039 POST https://www.swiggy.com/dapi/address
+  Evidence: dapiFetch
+  Sources: swiggy-review/swiggy-cart.js:5114
+  bodyFields: address, addressCategory, annotation, area, cart_type, city, customer_id, flat_no, is_edited, landmark, lat, lng, mobile, name
+
+SRC-040 POST https://www.swiggy.com/dapi/auth/logout
+  Evidence: fetch
+  Sources: swiggy-review/swiggy-bridge.js:2874
+
+SRC-041 POST https://www.swiggy.com/dapi/auth/otp-generate
+  Evidence: postSwiggyAuthJson
+  Sources: swiggy-review/swiggy-bridge.js:1793
+
+SRC-042 POST https://www.swiggy.com/dapi/auth/otp-verify
+  Evidence: postSwiggyAuthJson
+  Sources: swiggy-review/swiggy-bridge.js:2603
+
+SRC-043 POST https://www.swiggy.com/dapi/auth/signin-with-check
+  Evidence: postSwiggyAuthJson
+  Sources: swiggy-review/swiggy-bridge.js:1806
+
+SRC-044 POST https://www.swiggy.com/dapi/auth/signup
+  Evidence: postSwiggyAuthJson
+  Sources: swiggy-review/swiggy-bridge.js:1820; swiggy-review/swiggy-bridge.js:1832; swiggy-review/swiggy-bridge.js:2661; swiggy-review/swiggy-bridge.js:2674; swiggy-review/swiggy-bridge.js:2759; swiggy-review/swiggy-bridge.js:2772
+
+SRC-045 POST https://www.swiggy.com/dapi/auth/sms-otp
+  Evidence: postSwiggyAuthJson
+  Sources: swiggy-review/swiggy-bridge.js:1775; swiggy-review/swiggy-bridge.js:1854
+
+SRC-046 GET https://www.swiggy.com/dapi/cart
+  Evidence: dapiFetch, fetch
+  Sources: swiggy-review/swiggy-cart.js:1177; swiggy-review/swiggy-cart.js:5682; swiggy-review/swiggy-cart.js:5748; swiggy-review/swiggy-cart.js:874
+  headers: Accept, Cookie, Referer, User-Agent
+
+SRC-047 POST https://www.swiggy.com/dapi/cart
+  Evidence: dapiFetch
+  Sources: swiggy-review/swiggy-cart.js:929
+  bodyFields: cart, flushFirst
+
+SRC-048 POST https://www.swiggy.com/dapi/cart/applyCoupon
+  Evidence: dapiFetch
+  Sources: swiggy-review/swiggy-cart.js:6007
+
+SRC-049 POST https://www.swiggy.com/dapi/cart/flush
+  Evidence: dapiFetch
+  Sources: swiggy-review/swiggy-cart.js:954
+
+SRC-050 POST https://www.swiggy.com/dapi/cart/removeCoupon
+  Evidence: dapiFetch
+  Sources: swiggy-review/swiggy-cart.js:6007
+
+SRC-051 GET https://www.swiggy.com/dapi/menu/pl?page-type=REGULAR_MENU&complete-menu={complete-menu}&lat={lat}&lng={lng}&restaurantId={restaurantId}
+  Evidence: dapiFetch
+  Sources: swiggy-review/swiggy-cart.js:2628
+
+SRC-052 POST https://www.swiggy.com/dapi/misc/address-recommend
+  Evidence: dapiFetch
+  Sources: swiggy-review/swiggy-cart.js:1758
+  bodyFields: latlng
+
+SRC-053 GET https://www.swiggy.com/dapi/offers/payment?lat={lat}&lng={lng}&restaurantId={restaurantId}&cart_value={cart_value}&restaurant_id={restaurant_id}&sourcePage={sourcePage}&source_page={source_page}&page_type={page_type}
+  Evidence: dapiFetch
+  Sources: swiggy-review/swiggy-cart.js:6532
+
+SRC-054 GET https://www.swiggy.com/dapi/offers/restaurant?lat={lat}&lng={lng}&restaurantId={restaurantId}
+  Evidence: dapiFetch
+  Sources: swiggy-review/swiggy-cart.js:6539
+
+SRC-055 GET https://www.swiggy.com/dapi/order/all
+  Evidence: dapiFetch, fetch
+  Sources: swiggy-review/index.js:5831; swiggy-review/index.js:6093; swiggy-review/order-tracking.js:590; swiggy-review/swiggy-bridge.js:2046; swiggy-review/swiggy-bridge.js:2463; swiggy-review/swiggy-bridge.js:596; swiggy-review/swiggy-cart.js:1082; swiggy-review/swiggy-cart.js:463; swiggy-review/swiggy-cart.js:5232; swiggy-review/swiggy-cart.js:626; swiggy-review/swiggy-cart.js:7599; swiggy-review/swiggy-cart.js:9791
+  headers: Accept, Cookie, Referer, User-Agent
+
+SRC-056 GET https://www.swiggy.com/dapi/order/all?order_id={order_id}&deliveryType={deliveryType}
+  Evidence: dapiFetch
+  Sources: swiggy-review/swiggy-cart.js:7600
+
+SRC-057 GET https://www.swiggy.com/dapi/order/all?page={page}
+  Evidence: dapiFetch
+  Sources: swiggy-review/swiggy-cart.js:9808
+
+SRC-058 GET https://www.swiggy.com/dapi/order/details?order_id={order_id}&type=full&version=V2
+  Evidence: dapiFetch
+  Sources: swiggy-review/order-tracking.js:599; swiggy-review/swiggy-cart.js:10095; swiggy-review/swiggy-cart.js:10193; swiggy-review/swiggy-cart.js:4692; swiggy-review/swiggy-cart.js:5281; swiggy-review/swiggy-cart.js:9666; swiggy-review/swiggy-cart.js:9832
+
+SRC-059 GET https://www.swiggy.com/dapi/order/track?order_id={order_id}
+  Evidence: dapiFetch
+  Sources: swiggy-review/order-tracking.js:601
+
+SRC-060 GET https://www.swiggy.com/dapi/order/trackV2/de?order_id={order_id}
+  Evidence: dapiFetch
+  Sources: swiggy-review/forwarded-order-flow.js:1824; swiggy-review/swiggy-cart.js:10192; swiggy-review/swiggy-cart.js:5271; swiggy-review/swiggy-cart.js:9668
+
+SRC-061 GET https://www.swiggy.com/dapi/order/trackV4?order_id={order_id}&type=full&version=V2&customer_id={customer_id}
+  Evidence: dapiFetch
+  Sources: swiggy-review/forwarded-order-flow.js:1823; swiggy-review/order-tracking.js:600; swiggy-review/swiggy-cart.js:4691; swiggy-review/swiggy-cart.js:5263; swiggy-review/swiggy-cart.js:9667
+
+SRC-062 GET https://www.swiggy.com/dapi/order/trackV4?order_id={order_id}&type=full&version={version}
+  Evidence: dapiFetch
+  Sources: swiggy-review/swiggy-cart.js:10191
+
+SRC-063 GET https://www.swiggy.com/dapi/profile/info
+  Evidence: dapiFetch, fetch
+  Sources: swiggy-review/swiggy-bridge.js:2423; swiggy-review/swiggy-cart.js:5842; swiggy-review/swiggy-cart.js:650
+
+SRC-064 POST https://www.swiggy.com/dapi/rewards/claim
+  Evidence: fetch
+  Sources: swiggy-review/swiggy-cart.js:5734
+  headers: Content-Type
+  bodyFields: campaign
+
+SRC-065 GET https://www.swiggy.com/dapi/social/getAddress/{tok}
+  Evidence: dapiFetch
+  Sources: swiggy-review/swiggy-cart.js:2202
+
+SRC-066 POST https://www.swiggy.com/dapi/user/swiggy-money/opt-in
+  Evidence: fetch
+  Sources: swiggy-review/swiggy-cart.js:5724
+  headers: Accept, Content-Type
+
+SRC-067 POST https://www.swiggy.com/mapi/auth/delete/user
+  Evidence: fetch
+  Sources: swiggy-review/swiggy-bridge.js:2275
+  headers: Accept, Content-Type, Cookie, Origin, Referer, User-Agent
+  bodyFields: otp
+
+SRC-068 GET https://www.swiggy.com/mapi/auth/delete/userCheck
+  Evidence: fetch
+  Sources: swiggy-review/swiggy-bridge.js:2119
+  headers: Accept, Cookie, Origin, Referer, User-Agent
+
+SRC-069 UNKNOWN https://www.swiggy.com/mapi/{relEndpoint}
+  Evidence: literal
+  Sources: swiggy-review/swiggy-cart.js:1038
+
+SRC-070 UNKNOWN mapi/order/details?order_id={order_id}&type=full&version=V2
+  Evidence: literal
+  Sources: swiggy-review/swiggy-cart.js:9484
+
+SRC-071 UNKNOWN mapi/order/share?order_id={order_id}
+  Evidence: literal
+  Sources: swiggy-review/swiggy-cart.js:9485
+
+SRC-072 UNKNOWN mapi/order/shareableLink?order_id={order_id}
+  Evidence: literal
+  Sources: swiggy-review/swiggy-cart.js:9486
+
+SRC-073 UNKNOWN mapi/order/track?order_id={order_id}&version=V2
+  Evidence: literal
+  Sources: swiggy-review/swiggy-cart.js:9487
+
+SRC-074 UNKNOWN mapi/order/trackV4?order_id={order_id}&type=full&version={version}
+  Evidence: literal
+  Sources: swiggy-review/swiggy-cart.js:9491
+
+SRC-075 UNKNOWN offers/payment?lat={lat}&lng={lng}&restaurantId={restaurantId}&cart_value={cart_value}&restaurant_id={restaurant_id}&sourcePage={sourcePage}&source_page={source_page}&page_type={page_type}
+  Evidence: literal
+  Sources: swiggy-review/swiggy-cart.js:6534
+
+SRC-076 UNKNOWN offers/restaurant?lat={lat}&lng={lng}&restaurantId={restaurantId}
+  Evidence: literal
+  Sources: swiggy-review/swiggy-cart.js:6539
+
+SRC-077 UNKNOWN order/all
+  Evidence: literal
+  Sources: swiggy-review/index.js:5831; swiggy-review/index.js:6093; swiggy-review/order-tracking.js:590; swiggy-review/swiggy-cart.js:463; swiggy-review/swiggy-cart.js:5232; swiggy-review/swiggy-cart.js:626; swiggy-review/swiggy-cart.js:7599; swiggy-review/swiggy-cart.js:9791
+
+SRC-078 UNKNOWN order/all?order_id={order_id}&deliveryType={deliveryType}
+  Evidence: literal
+  Sources: swiggy-review/swiggy-cart.js:7600
+
+SRC-079 UNKNOWN order/all?page={page}
+  Evidence: literal
+  Sources: swiggy-review/swiggy-cart.js:9808
+
+SRC-080 UNKNOWN order/details?order_id={order_id}&type=full&version=V2
+  Evidence: literal
+  Sources: swiggy-review/order-tracking.js:599; swiggy-review/swiggy-cart.js:10095; swiggy-review/swiggy-cart.js:10193; swiggy-review/swiggy-cart.js:4692; swiggy-review/swiggy-cart.js:5281; swiggy-review/swiggy-cart.js:9480; swiggy-review/swiggy-cart.js:9666; swiggy-review/swiggy-cart.js:9832; swiggy-review/swiggy-cart.js:9954
+
+SRC-081 UNKNOWN order/share?order_id={order_id}
+  Evidence: literal
+  Sources: swiggy-review/swiggy-cart.js:9481
+
+SRC-082 UNKNOWN order/shareableLink?order_id={order_id}
+  Evidence: literal
+  Sources: swiggy-review/swiggy-cart.js:9482
+
+SRC-083 UNKNOWN order/track?order_id={order_id}
+  Evidence: literal
+  Sources: swiggy-review/order-tracking.js:601; swiggy-review/swiggy-cart.js:9479
+
+SRC-084 UNKNOWN order/trackV2/de?order_id={order_id}
+  Evidence: literal
+  Sources: swiggy-review/forwarded-order-flow.js:1824; swiggy-review/swiggy-cart.js:10192; swiggy-review/swiggy-cart.js:5273; swiggy-review/swiggy-cart.js:9668
+
+SRC-085 UNKNOWN order/trackV4?order_id={order_id}&type=full&version=V2&customer_id={customer_id}
+  Evidence: literal
+  Sources: swiggy-review/forwarded-order-flow.js:1823; swiggy-review/order-tracking.js:600; swiggy-review/swiggy-cart.js:4691; swiggy-review/swiggy-cart.js:5265; swiggy-review/swiggy-cart.js:9667
+
+SRC-086 UNKNOWN order/trackV4?order_id={order_id}&type=full&version={version}
+  Evidence: literal
+  Sources: swiggy-review/swiggy-cart.js:10191; swiggy-review/swiggy-cart.js:9490; swiggy-review/swiggy-cart.js:9952; swiggy-review/swiggy-cart.js:9953
+
+SRC-087 UNKNOWN profile/info
+  Evidence: literal
+  Sources: swiggy-review/swiggy-cart.js:5842; swiggy-review/swiggy-cart.js:650
+
+SRC-088 UNKNOWN social/getAddress/{tok}
+  Evidence: literal
+  Sources: swiggy-review/swiggy-cart.js:2202
+
+
+========================================================================================
+6. ALL SWIGGY APK RETROFIT HTTP DECLARATIONS
+========================================================================================
+
+Declarations: 367. Each record retains its declaring class and DEX.
+Status of every entry in this section: APK-STATIC.
+A relative path must be combined with the correct runtime Retrofit base URL;
+do not automatically attach www.swiggy.com or a host from another service.
+Empty paths indicate a runtime URL/relative-base call. Obfuscated method names
+are retained exactly. An API in a Dineout class is not an Instamart API.
+Body parameter class names are static type evidence, not complete JSON schemas.
+
+APK-001 POST <runtime URL / empty annotation path>
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/address/formV2/repository/addressImages/a;->c
+  Encoding: Multipart
+  Parameter 1: Url : java.lang.String
+  Parameter 2: Part(Content-Type) : okhttp3.RequestBody
+  Parameter 3: Part(bucket) : okhttp3.RequestBody
+  Parameter 4: Part(key) : okhttp3.RequestBody
+  Parameter 5: Part(policy) : okhttp3.RequestBody
+  Parameter 6: Part(x-amz-algorithm) : okhttp3.RequestBody
+  Parameter 7: Part(x-amz-credential) : okhttp3.RequestBody
+  Parameter 8: Part(x-amz-date) : okhttp3.RequestBody
+  Parameter 9: Part(x-amz-signature) : okhttp3.RequestBody
+  Parameter 10: Part : okhttp3.MultipartBody$Part
+  Return type: java.lang.Object
+
+APK-002 POST signed-url/download
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/address/formV2/repository/addressImages/a;->b
+  Parameter 1: Header(client-id) : java.lang.String
+  Parameter 2: Header(content-type) : java.lang.String
+  Parameter 3: Header(tid) : java.lang.String
+  Parameter 4: Body : in.swiggy.android.tejas.feature.voiceDirections.model.b
+  Return type: java.lang.Object
+
+APK-003 GET signed-url/upload/address-images
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/address/formV2/repository/addressImages/a;->a
+  Parameter 1: Header(client-id) : java.lang.String
+  Parameter 2: Header(content-type) : java.lang.String
+  Parameter 3: Header(tid) : java.lang.String
+  Return type: java.lang.Object
+
+APK-004 POST /api/v1/json/update_frequency_counter
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/cappingsdk/data/c;->a
+  Parameter 1: Body : in.swiggy.android.cappingsdk.data.models.f
+  Return type: java.lang.Object
+
+APK-005 POST /api/v1/update_frequency_counter
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/cappingsdk/data/c;->b
+  Parameter 1: Body : com.swiggy.sand.frequency.frequencyservice.v1.UpdateCounterRequest
+  Return type: java.lang.Object
+
+APK-006 GET /address/recommend
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/compass/reverseGeocode/d;->a
+  Parameter 1: Query(place_id) : java.lang.String
+  Parameter 2: Header(Recommends-Id) : java.lang.String
+  Parameter 3: Header(client-id) : java.lang.String
+  Parameter 4: Query(enrich_poi_components) : Z
+  Return type: java.lang.Object
+
+APK-007 GET /address/recommend
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/compass/reverseGeocode/d;->b
+  Parameter 1: Query(latlng) : java.lang.String
+  Parameter 2: Header(Recommends-Id) : java.lang.String
+  Parameter 3: Header(client-id) : java.lang.String
+  Parameter 4: Query(enrich_poi_components) : Z
+  Return type: java.lang.Object
+
+APK-008 GET /api/v1/dineout_collection
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dineout/api/b;->e
+  Parameter 1: Query(collection_identifier) : java.lang.String
+  Parameter 2: Query(lat) : java.lang.String
+  Parameter 3: Query(lng) : java.lang.String
+  Parameter 4: Query(meta_map) : java.lang.String
+  Parameter 5: Query(tags) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-009 POST /api/v1/dineout_item_collection/json/{pageID}
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dineout/api/b;->i
+  Parameter 1: Path(pageID) : java.lang.String
+  Parameter 2: Query(lat) : java.lang.String
+  Parameter 3: Query(lng) : java.lang.String
+  Parameter 4: Query(collection_identifier) : java.lang.String
+  Parameter 5: Body : java.lang.Object
+  Parameter 6: Header(is_location_saved) : java.lang.Boolean
+  Parameter 7: Header(commonHeaders) : in.swiggy.android.tejas.feature.common.a
+  Parameter 8: Query(isTopNavEntry) : Z
+  Return type: kotlinx.coroutines.flow.g
+
+APK-010 POST /api/v1/dineout_item_collection/{pageID}
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dineout/api/b;->b
+  Parameter 1: Path(pageID) : java.lang.String
+  Parameter 2: Query(lat) : java.lang.String
+  Parameter 3: Query(lng) : java.lang.String
+  Parameter 4: Query(collection_identifier) : java.lang.String
+  Parameter 5: Body : java.lang.Object
+  Parameter 6: Header(is_location_saved) : java.lang.Boolean
+  Parameter 7: Header(commonHeaders) : in.swiggy.android.tejas.feature.common.a
+  Parameter 8: Query(isTopNavEntry) : Z
+  Return type: kotlinx.coroutines.flow.g
+
+APK-011 GET /api/v1/json/dineout_collection
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dineout/api/b;->g
+  Parameter 1: Query(collection_identifier) : java.lang.String
+  Parameter 2: Query(lat) : java.lang.String
+  Parameter 3: Query(lng) : java.lang.String
+  Parameter 4: Query(meta_map) : java.lang.String
+  Parameter 5: Query(tags) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-012 POST /api/v1/json/{pageID}
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dineout/api/b;->c
+  Parameter 1: Path(pageID) : java.lang.String
+  Parameter 2: Query(lat) : java.lang.String
+  Parameter 3: Query(lng) : java.lang.String
+  Parameter 4: Query(collection_identifier) : java.lang.String
+  Parameter 5: Body : java.lang.Object
+  Parameter 6: Header(is_location_saved) : java.lang.Boolean
+  Parameter 7: Header(commonHeaders) : in.swiggy.android.tejas.feature.common.a
+  Parameter 8: Query(isTopNavEntry) : Z
+  Return type: kotlinx.coroutines.flow.g
+
+APK-013 POST /api/v1/user/upcoming-bookings
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dineout/api/b;->j
+  Parameter 1: Query(lat) : java.lang.String
+  Parameter 2: Query(lng) : java.lang.String
+  Parameter 3: Query(subPage) : java.lang.String
+  Parameter 4: Body : java.lang.Object
+  Parameter 5: Header(is_location_saved) : java.lang.Boolean
+  Parameter 6: Header(commonHeaders) : in.swiggy.android.tejas.feature.common.a
+  Parameter 7: Query(isTopNavEntry) : Z
+  Return type: kotlinx.coroutines.flow.g
+
+APK-014 POST /api/v1/user/upcoming-bookings/json
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dineout/api/b;->a
+  Parameter 1: Query(lat) : java.lang.String
+  Parameter 2: Query(lng) : java.lang.String
+  Parameter 3: Query(subPage) : java.lang.String
+  Parameter 4: Body : java.lang.Object
+  Parameter 5: Header(is_location_saved) : java.lang.Boolean
+  Parameter 6: Header(commonHeaders) : in.swiggy.android.tejas.feature.common.a
+  Parameter 7: Query(isTopNavEntry) : Z
+  Return type: kotlinx.coroutines.flow.g
+
+APK-015 POST /api/v1/{pageID}
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dineout/api/b;->h
+  Parameter 1: Path(pageID) : java.lang.String
+  Parameter 2: Query(lat) : java.lang.String
+  Parameter 3: Query(lng) : java.lang.String
+  Parameter 4: Query(collection_identifier) : java.lang.String
+  Parameter 5: Body : java.lang.Object
+  Parameter 6: Header(is_location_saved) : java.lang.Boolean
+  Parameter 7: Header(commonHeaders) : in.swiggy.android.tejas.feature.common.a
+  Parameter 8: Query(isTopNavEntry) : Z
+  Return type: kotlinx.coroutines.flow.g
+
+APK-016 POST /api/v1/{pageID}/json
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dineout/api/b;->d
+  Parameter 1: Path(pageID) : java.lang.String
+  Parameter 2: Query(lat) : java.lang.String
+  Parameter 3: Query(lng) : java.lang.String
+  Parameter 4: Query(collection_identifier) : java.lang.String
+  Parameter 5: Body : java.lang.Object
+  Parameter 6: Header(is_location_saved) : java.lang.Boolean
+  Parameter 7: Header(commonHeaders) : in.swiggy.android.tejas.feature.common.a
+  Parameter 8: Query(isTopNavEntry) : Z
+  Return type: kotlinx.coroutines.flow.g
+
+APK-017 GET api/dinersone/{pageID}
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dineout/api/b;->f
+  Parameter 1: Path(pageID) : java.lang.String
+  Parameter 2: Header(lat) : java.lang.String
+  Parameter 3: Header(lng) : java.lang.String
+  Parameter 4: Query(subPage) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-018 GET api/dinersone/{pageID}/json
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dineout/api/b;->k
+  Parameter 1: Path(pageID) : java.lang.String
+  Parameter 2: Header(lat) : java.lang.String
+  Parameter 3: Header(lng) : java.lang.String
+  Parameter 4: Query(subPage) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-019 POST /api/v1/checkout/order
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dineout/api/c;->b
+  Parameter 1: Query(cartType) : java.lang.String
+  Parameter 2: Body : in.swiggy.android.swiggylynx.plugin.dinersCart.payLoad.DinersOrderPayload
+  Return type: java.lang.Object
+
+APK-020 POST /api/v2/view/DINEOUT
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dineout/api/c;->a
+  Parameter 1: Body : in.swiggy.android.swiggylynx.plugin.dinersCart.payLoad.DinersCartPayLoad
+  Return type: java.lang.Object
+
+APK-021 POST /api/v1/dinersone-restaurant
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dineout/api/d;->d
+  Parameter 1: Query(restaurantId) : java.lang.String
+  Parameter 2: Query(subPage) : java.lang.String
+  Parameter 3: Query(source) : java.lang.String
+  Parameter 4: Query(tableId) : java.lang.String
+  Parameter 5: Query(parentOrderId) : java.lang.String
+  Parameter 6: Header(commonHeaders) : in.swiggy.android.tejas.feature.common.a
+  Return type: kotlinx.coroutines.flow.g
+
+APK-022 POST /api/v1/dinersone-restaurant/json
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dineout/api/d;->b
+  Parameter 1: Query(restaurantId) : java.lang.String
+  Parameter 2: Query(subPage) : java.lang.String
+  Parameter 3: Query(source) : java.lang.String
+  Parameter 4: Query(tableId) : java.lang.String
+  Parameter 5: Query(parentOrderId) : java.lang.String
+  Parameter 6: Header(commonHeaders) : in.swiggy.android.tejas.feature.common.a
+  Return type: kotlinx.coroutines.flow.g
+
+APK-023 POST /api/v2/view/getBill/json
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dineout/api/d;->c
+  Parameter 1: Query(isNewRequest) : Z
+  Parameter 2: Body : in.swiggy.android.dineout.api.a
+  Return type: kotlinx.coroutines.flow.g
+
+APK-024 POST /api/v2/view/getBill/proto
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dineout/api/d;->a
+  Parameter 1: Query(isNewRequest) : Z
+  Parameter 2: Body : in.swiggy.android.dineout.api.a
+  Return type: kotlinx.coroutines.flow.g
+
+APK-025 POST /scenes/discovery/v1/event_user/profile_attribute/update
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dineout/api/e;->a
+  Parameter 1: Body : java.lang.Object
+  Return type: kotlinx.coroutines.flow.g
+
+APK-026 POST /api/v1/user/upcoming-bookings
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dobookinglist/api/a;->a
+  Parameter 1: Query(subPage) : java.lang.String
+  Parameter 2: Body : java.lang.Object
+  Parameter 3: QueryMap : java.util.Map
+  Return type: kotlinx.coroutines.flow.g
+
+APK-027 POST /api/v1/user/upcoming-bookings/json
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dobookinglist/api/a;->b
+  Parameter 1: Query(subPage) : java.lang.String
+  Parameter 2: Body : java.lang.Object
+  Parameter 3: QueryMap : java.util.Map
+  Return type: kotlinx.coroutines.flow.g
+
+APK-028 GET /api/v1/restaurant/{restaurantId}/deal-detail
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/docombinedinventory/api/a;->b
+  Parameter 1: Path(restaurantId) : java.lang.String
+  Parameter 2: Query(date) : java.lang.String
+  Parameter 3: Query(subPage) : java.lang.String
+  Parameter 4: Query(datesCount) : java.lang.String
+  Parameter 5: Query(lat) : java.lang.String
+  Parameter 6: Query(lng) : java.lang.String
+  Parameter 7: Query(referrerId) : java.lang.String
+  Parameter 8: Query(referrer) : java.lang.String
+  Parameter 9: Query(dineIn-st) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-029 GET /api/v1/restaurant/{restaurantId}/deal-detail/json
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/docombinedinventory/api/a;->a
+  Parameter 1: Path(restaurantId) : java.lang.String
+  Parameter 2: Query(date) : java.lang.String
+  Parameter 3: Query(subPage) : java.lang.String
+  Parameter 4: Query(datesCount) : java.lang.String
+  Parameter 5: Query(lat) : java.lang.String
+  Parameter 6: Query(lng) : java.lang.String
+  Parameter 7: Query(referrerId) : java.lang.String
+  Parameter 8: Query(referrer) : java.lang.String
+  Parameter 9: Query(dineIn-st) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-030 GET /api/v1/digital-menu/customer/ordered-items
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dodigitalmenu/api/a;->a
+  Parameter 1: Header(userId) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-031 GET /api/dinersone/useronboarding
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dodigitalmenu/api/b;->b
+  Parameter 1: Query(restaurantId) : java.lang.String
+  Parameter 2: Query(tableId) : java.lang.String
+  Parameter 3: Query(consentLDA) : java.lang.Boolean
+  Return type: kotlinx.coroutines.flow.g
+
+APK-032 GET /api/dinersone/useronboarding/json
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dodigitalmenu/api/b;->f
+  Parameter 1: Query(restaurantId) : java.lang.String
+  Parameter 2: Query(tableId) : java.lang.String
+  Parameter 3: Query(consentLDA) : java.lang.Boolean
+  Return type: kotlinx.coroutines.flow.g
+
+APK-033 GET /api/v1/digital-menu/config
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dodigitalmenu/api/b;->h
+  Parameter 1: Query(restaurantId) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-034 GET /api/v1/digital-menu/config/json
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dodigitalmenu/api/b;->e
+  Parameter 1: Query(restaurantId) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-035 POST /api/v1/digital-menu/qr-scan
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dodigitalmenu/api/b;->n
+  Parameter 1: Body : in.swiggy.android.dodigitalmenu.model.request.QrScanRequestBody
+  Return type: kotlinx.coroutines.flow.g
+
+APK-036 POST /api/v1/digital-menu/qr-scan/json
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dodigitalmenu/api/b;->p
+  Parameter 1: Body : in.swiggy.android.dodigitalmenu.model.request.QrScanRequestBody
+  Return type: kotlinx.coroutines.flow.g
+
+APK-037 POST /api/v1/digital-menu/user-session-configs/claim
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dodigitalmenu/api/b;->d
+  Parameter 1: Header(userId) : java.lang.String
+  Parameter 2: Query(restaurantId) : java.lang.String
+  Parameter 3: Body : in.swiggy.android.dodigitalmenu.model.request.UserSessionConfigClaimRequestBody
+  Return type: kotlinx.coroutines.flow.g
+
+APK-038 POST /api/v1/digital-menu/user-session-configs/claim/json
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dodigitalmenu/api/b;->a
+  Parameter 1: Header(userId) : java.lang.String
+  Parameter 2: Query(restaurantId) : java.lang.String
+  Parameter 3: Body : in.swiggy.android.dodigitalmenu.model.request.UserSessionConfigClaimRequestBody
+  Return type: kotlinx.coroutines.flow.g
+
+APK-039 PUT /api/v1/digital-menu/user-session-configs/consent
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dodigitalmenu/api/b;->o
+  Parameter 1: Header(userId) : java.lang.String
+  Parameter 2: Query(restaurantId) : java.lang.String
+  Parameter 3: Body : in.swiggy.android.dodigitalmenu.model.request.UpdateUserConsentRequestBody
+  Return type: kotlinx.coroutines.flow.g
+
+APK-040 PUT /api/v1/digital-menu/user-session-configs/consent/json
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dodigitalmenu/api/b;->t
+  Parameter 1: Header(userId) : java.lang.String
+  Parameter 2: Query(restaurantId) : java.lang.String
+  Parameter 3: Body : in.swiggy.android.dodigitalmenu.model.request.UpdateUserConsentRequestBody
+  Return type: kotlinx.coroutines.flow.g
+
+APK-041 GET /api/v1/entity/ENTITY_DINEOUT_MENU/{restaurantId}
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dodigitalmenu/api/b;->l
+  Parameter 1: Path(restaurantId) : java.lang.String
+  Parameter 2: Query(restaurantId) : java.lang.String
+  Parameter 3: Query(tableId) : java.lang.String
+  Parameter 4: Query(consentLDA) : java.lang.Boolean
+  Return type: kotlinx.coroutines.flow.g
+
+APK-042 GET /api/v1/entity/ENTITY_DINEOUT_MENU/{restaurantId}/json
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dodigitalmenu/api/b;->c
+  Parameter 1: Path(restaurantId) : java.lang.String
+  Parameter 2: Query(restaurantId) : java.lang.String
+  Parameter 3: Query(tableId) : java.lang.String
+  Parameter 4: Query(consentLDA) : java.lang.Boolean
+  Return type: kotlinx.coroutines.flow.g
+
+APK-043 POST /api/v1/json/layout-section/CROSS_SELL_DINEOUT
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dodigitalmenu/api/b;->j
+  Parameter 1: Query(lat) : java.lang.String
+  Parameter 2: Query(lng) : java.lang.String
+  Parameter 3: Body : in.swiggy.android.dodigitalmenu.model.request.CrossSellRequestBody
+  Return type: kotlinx.coroutines.flow.g
+
+APK-044 POST /api/v1/layout-section/CROSS_SELL_DINEOUT
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dodigitalmenu/api/b;->g
+  Parameter 1: Query(lat) : java.lang.String
+  Parameter 2: Query(lng) : java.lang.String
+  Parameter 3: Body : in.swiggy.android.dodigitalmenu.model.request.CrossSellRequestBody
+  Return type: kotlinx.coroutines.flow.g
+
+APK-045 POST /api/v1/quickActions/submit/json
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dodigitalmenu/api/b;->k
+  Parameter 1: Body : in.swiggy.android.dodigitalmenu.model.request.QuickActionRequestBody
+  Return type: kotlinx.coroutines.flow.g
+
+APK-046 POST /api/v1/quickActions/submit/proto
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dodigitalmenu/api/b;->q
+  Parameter 1: Body : in.swiggy.android.dodigitalmenu.model.request.QuickActionRequestBody
+  Return type: kotlinx.coroutines.flow.g
+
+APK-047 POST /api/v2/view/pin/json
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dodigitalmenu/api/b;->r
+  Parameter 1: Body : in.swiggy.android.dodigitalmenu.model.request.TablePinRequestBody
+  Return type: kotlinx.coroutines.flow.g
+
+APK-048 POST /api/v2/view/pin/proto
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dodigitalmenu/api/b;->i
+  Parameter 1: Body : in.swiggy.android.dodigitalmenu.model.request.TablePinRequestBody
+  Return type: kotlinx.coroutines.flow.g
+
+APK-049 POST /api/v2/view/verify-pin/json
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dodigitalmenu/api/b;->m
+  Parameter 1: Body : in.swiggy.android.dodigitalmenu.model.request.VerifyPinRequestBody
+  Return type: kotlinx.coroutines.flow.g
+
+APK-050 POST /api/v2/view/verify-pin/proto
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dodigitalmenu/api/b;->s
+  Parameter 1: Body : in.swiggy.android.dodigitalmenu.model.request.VerifyPinRequestBody
+  Return type: kotlinx.coroutines.flow.g
+
+APK-051 GET /api/v1/entity/{entityType}/{entityId}
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/doeventdetail/api/a;->a
+  Parameter 1: Path(entityType) : java.lang.String
+  Parameter 2: Path(entityId) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-052 GET /api/v1/entity/{entityType}/{entityId}/json
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/doeventdetail/api/a;->b
+  Parameter 1: Path(entityType) : java.lang.String
+  Parameter 2: Path(entityId) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-053 GET /api/v1/gallerypage
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/donetwork/api/a;->a
+  Parameter 1: Query(restaurantId) : java.lang.String
+  Parameter 2: Query(entityId) : java.lang.String
+  Parameter 3: Query(subPage) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-054 GET /api/v1/gallerypage/json
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/donetwork/api/a;->b
+  Parameter 1: Query(restaurantId) : java.lang.String
+  Parameter 2: Query(entityId) : java.lang.String
+  Parameter 3: Query(subPage) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-055 GET /api/v1/dinersone-restaurant
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/donetwork/api/b;->b
+  Parameter 1: Query(restaurantId) : java.lang.String
+  Parameter 2: Query(subPage) : java.lang.String
+  Parameter 3: Query(brandId) : java.lang.String
+  Parameter 4: Query(voucherItemIds) : java.lang.String
+  Parameter 5: Header(is_native) : Z
+  Parameter 6: Header(source) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-056 GET /api/v1/dinersone-restaurant/json
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/donetwork/api/b;->a
+  Parameter 1: Query(restaurantId) : java.lang.String
+  Parameter 2: Query(subPage) : java.lang.String
+  Parameter 3: Query(brandId) : java.lang.String
+  Parameter 4: Query(voucherItemIds) : java.lang.String
+  Parameter 5: Header(is_native) : Z
+  Parameter 6: Header(source) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-057 POST /api/v1/chat_bot
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/donetwork/api/dochatbot/a;->b
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Parameter 3: Query(pageLimit) : I
+  Parameter 4: Query(chatId) : java.lang.String
+  Parameter 5: Header(business_line_id) : java.lang.String
+  Parameter 6: Header(new_chat) : Z
+  Parameter 7: Header(referrer) : java.lang.String
+  Parameter 8: Header(referrer_id) : java.lang.String
+  Parameter 9: Header(user_message_id) : java.lang.String
+  Parameter 10: Header(user_parent_message_id) : java.lang.String
+  Parameter 11: Header(bot_message_id) : java.lang.String
+  Parameter 12: Header(bot_parent_message_id) : java.lang.String
+  Parameter 13: Header(sub_page) : java.lang.String
+  Parameter 14: Header(model_name) : java.lang.String
+  Parameter 15: Body : java.lang.Object
+  Return type: java.lang.Object
+
+APK-058 POST /api/v1/json/chat_bot
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/donetwork/api/dochatbot/a;->a
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Parameter 3: Query(pageLimit) : I
+  Parameter 4: Query(chatId) : java.lang.String
+  Parameter 5: Header(business_line_id) : java.lang.String
+  Parameter 6: Header(new_chat) : Z
+  Parameter 7: Header(referrer) : java.lang.String
+  Parameter 8: Header(referrer_id) : java.lang.String
+  Parameter 9: Header(user_message_id) : java.lang.String
+  Parameter 10: Header(user_parent_message_id) : java.lang.String
+  Parameter 11: Header(bot_message_id) : java.lang.String
+  Parameter 12: Header(bot_parent_message_id) : java.lang.String
+  Parameter 13: Header(sub_page) : java.lang.String
+  Parameter 14: Header(model_name) : java.lang.String
+  Parameter 15: Body : java.lang.Object
+  Return type: java.lang.Object
+
+APK-059 GET /api/v1/entity/DINECASH_DEAL_DETAIL/{voucherId}
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dovoucher/api/a;->b
+  Parameter 1: Path(voucherId) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-060 GET /api/v1/entity/DINECASH_DEAL_DETAIL/{voucherId}/json
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dovoucher/api/a;->a
+  Parameter 1: Path(voucherId) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-061 GET /api/v1/entity/VOUCHER/{voucherId}
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dovoucher/api/b;->a
+  Parameter 1: Path(voucherId) : java.lang.String
+  Parameter 2: Query(voucherDealId) : java.lang.String
+  Parameter 3: Query(brandId) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-062 GET /api/v1/entity/VOUCHER/{voucherId}/json
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/dovoucher/api/b;->b
+  Parameter 1: Path(voucherId) : java.lang.String
+  Parameter 2: Query(voucherDealId) : java.lang.String
+  Parameter 3: Query(brandId) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-063 GET <runtime URL / empty annotation path>
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/feature/rating/sampling/repository/a;->a
+  Parameter 1: Url : java.lang.String
+  Return type: java.lang.Object
+
+APK-064 POST <runtime URL / empty annotation path>
+  Source: Swiggy.apk/classes6.dex :: Lin/swiggy/android/feature/rating/sampling/repository/a;->b
+  Parameter 1: Url : java.lang.String
+  Parameter 2: Body : in.swiggy.android.feature.rating.sampling.data.i
+  Return type: java.lang.Object
+
+APK-065 GET /api/v1/instamart/search-config
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/instamart/api/a;->a
+  Parameter 1: Query(query) : java.lang.String
+  Return type: java.lang.Object
+
+APK-066 GET <runtime URL / empty annotation path>
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/instamart/api/b;->i
+  Parameter 1: Url : java.lang.String
+  Parameter 2: Header(screen-name) : java.lang.String
+  Parameter 3: Header(metainfo) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-067 POST <runtime URL / empty annotation path>
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/instamart/api/b;->e
+  Parameter 1: Url : java.lang.String
+  Parameter 2: Header(screen-name) : java.lang.String
+  Parameter 3: Body : in.swiggy.android.tejas.feature.listing.splitcard.request.SplitCardRequestData
+  Parameter 4: Header(metainfo) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-068 POST <runtime URL / empty annotation path>
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/instamart/api/b;->n
+  Parameter 1: Url : java.lang.String
+  Parameter 2: Header(screen-name) : java.lang.String
+  Parameter 3: Body : in.swiggy.android.instamart.models.i
+  Parameter 4: Header(metainfo) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-069 GET /api/v1/instamart/complimentary_item
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/instamart/api/b;->h
+  Parameter 1: Query(complimentary_item.product_id) : java.lang.String
+  Parameter 2: Query(complimentary_item.l1_category_id) : java.lang.String
+  Parameter 3: Query(complimentary_item.l2_category_id) : java.lang.String
+  Parameter 4: Query(complimentary_item.product_brand_name) : java.lang.String
+  Parameter 5: Query(lat) : java.lang.String
+  Parameter 6: Query(lng) : java.lang.String
+  Parameter 7: Query(pod_id) : java.lang.String
+  Parameter 8: Query(sec_pod_id) : java.lang.String
+  Parameter 9: Header(metainfo) : java.lang.String
+  Parameter 10: Header(screen-name) : java.lang.String
+  Parameter 11: Query(complimentary_item.view_context) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-070 GET /api/v1/instamart/presearch
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/instamart/api/b;->a
+  Parameter 1: Query(lat) : java.lang.String
+  Parameter 2: Query(lng) : java.lang.String
+  Parameter 3: Query(pod_id) : java.lang.String
+  Parameter 4: Query(sec_pod_id) : java.lang.String
+  Parameter 5: Header(metainfo) : java.lang.String
+  Parameter 6: Query(presearch.contextual_search_metadata) : java.lang.String
+  Parameter 7: Query(presearch.isIntelligentSearchEnabled) : java.lang.String
+  Parameter 8: Query(is_cart_present) : java.lang.Boolean
+  Parameter 9: Query(offset) : java.lang.String
+  Parameter 10: Header(screen-name) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-071 POST /api/v1/instamart/product
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/instamart/api/b;->l
+  Parameter 1: Query(lat) : java.lang.String
+  Parameter 2: Query(lng) : java.lang.String
+  Parameter 3: Query(page_name) : java.lang.String
+  Parameter 4: Query(pod_id) : java.lang.String
+  Parameter 5: Query(sec_pod_id) : java.lang.String
+  Parameter 6: Header(metainfo) : java.lang.String
+  Parameter 7: Query(product.product_id) : java.lang.String
+  Parameter 8: Query(product.parent_product_id) : java.lang.String
+  Parameter 9: Header(screen-name) : java.lang.String
+  Parameter 10: Header(source) : java.lang.String
+  Parameter 11: Header(Page-Context) : java.lang.String
+  Parameter 12: QueryMap : java.util.Map
+  Parameter 13: Body : in.swiggy.android.tejas.im.feature.k
+  Return type: kotlinx.coroutines.flow.g
+
+APK-072 GET /api/v1/instamart/seo-product
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/instamart/api/b;->k
+  Parameter 1: Query(lat) : java.lang.String
+  Parameter 2: Query(lng) : java.lang.String
+  Parameter 3: Query(pod_id) : java.lang.String
+  Parameter 4: Query(sec_pod_id) : java.lang.String
+  Parameter 5: Header(metainfo) : java.lang.String
+  Parameter 6: Query(seo_product.spin_id) : java.lang.String
+  Parameter 7: Header(screen-name) : java.lang.String
+  Parameter 8: Header(source) : java.lang.String
+  Parameter 9: Header(Page-Context) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-073 GET /api/v1/instamart/{pageID}
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/instamart/api/b;->g
+  Parameter 1: Path(pageID) : java.lang.String
+  Parameter 2: Query(lat) : java.lang.String
+  Parameter 3: Query(lng) : java.lang.String
+  Parameter 4: Query(offset) : java.lang.String
+  Parameter 5: Query(pod_id) : java.lang.String
+  Parameter 6: Query(sec_pod_id) : java.lang.String
+  Parameter 7: Header(metainfo) : java.lang.String
+  Parameter 8: Query(layout_id) : java.lang.String
+  Parameter 9: Header(screen-name) : java.lang.String
+  Parameter 10: Header(entryId) : java.lang.String
+  Parameter 11: Header(entryName) : java.lang.String
+  Parameter 12: Header(entryContext) : java.lang.String
+  Parameter 13: Header(vpos) : java.lang.String
+  Parameter 14: Header(hpos) : java.lang.String
+  Parameter 15: QueryMap : java.util.Map
+  Return type: kotlinx.coroutines.flow.g
+
+APK-074 POST /api/v1/instamart/{pageID}
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/instamart/api/b;->d
+  Parameter 1: Path(pageID) : java.lang.String
+  Parameter 2: Query(lat) : java.lang.String
+  Parameter 3: Query(lng) : java.lang.String
+  Parameter 4: Query(offset) : java.lang.String
+  Parameter 5: Query(pod_id) : java.lang.String
+  Parameter 6: Query(sec_pod_id) : java.lang.String
+  Parameter 7: Header(metainfo) : java.lang.String
+  Parameter 8: Query(page_name) : java.lang.String
+  Parameter 9: Header(screen-name) : java.lang.String
+  Parameter 10: Body : in.swiggy.android.tejas.feature.search.request.srp.e
+  Return type: kotlinx.coroutines.flow.g
+
+APK-075 POST /api/v1/instamart/{pageID}
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/instamart/api/b;->j
+  Parameter 1: Path(pageID) : java.lang.String
+  Parameter 2: Query(lat) : java.lang.String
+  Parameter 3: Query(lng) : java.lang.String
+  Parameter 4: Query(offset) : java.lang.String
+  Parameter 5: Query(pod_id) : java.lang.String
+  Parameter 6: Query(sec_pod_id) : java.lang.String
+  Parameter 7: Header(metainfo) : java.lang.String
+  Parameter 8: Query(page_name) : java.lang.String
+  Parameter 9: Query(layout_id) : java.lang.String
+  Parameter 10: Header(screen-name) : java.lang.String
+  Parameter 11: QueryMap : java.util.Map
+  Parameter 12: Body : in.swiggy.android.tejas.feature.search.request.srp.d
+  Return type: kotlinx.coroutines.flow.g
+
+APK-076 GET /api/v1/instamart/{pageId}
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/instamart/api/b;->b
+  Parameter 1: Path(pageId) : java.lang.String
+  Parameter 2: Query(lat) : java.lang.String
+  Parameter 3: Query(lng) : java.lang.String
+  Parameter 4: Query(pod_id) : java.lang.String
+  Parameter 5: Query(sec_pod_id) : java.lang.String
+  Parameter 6: Header(metainfo) : java.lang.String
+  Parameter 7: Query(page_name) : java.lang.String
+  Parameter 8: Query(variants.parent_product_id) : java.lang.String
+  Parameter 9: Query(variants.preferred_spin_id) : java.lang.String
+  Parameter 10: Query(variants.page_variant) : java.lang.Integer
+  Parameter 11: Query(variants.product_id) : java.lang.String
+  Parameter 12: Query(variants.product_ad_tracking_id) : java.lang.String
+  Parameter 13: Header(screen-name) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-077 POST /api/v1/instamart/{pageId}
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/instamart/api/b;->m
+  Parameter 1: Path(pageId) : java.lang.String
+  Parameter 2: Query(lat) : java.lang.String
+  Parameter 3: Query(lng) : java.lang.String
+  Parameter 4: Query(page_name) : java.lang.String
+  Parameter 5: Query(pod_id) : java.lang.String
+  Parameter 6: Query(sec_pod_id) : java.lang.String
+  Parameter 7: Header(metainfo) : java.lang.String
+  Parameter 8: Header(screen-name) : java.lang.String
+  Parameter 9: Body : in.swiggy.android.tejas.im.feature.k
+  Return type: kotlinx.coroutines.flow.g
+
+APK-078 GET /api/v2/instamart/{pageID}
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/instamart/api/b;->c
+  Parameter 1: Path(pageID) : java.lang.String
+  Parameter 2: Query(lat) : java.lang.String
+  Parameter 3: Query(lng) : java.lang.String
+  Parameter 4: Query(offset) : java.lang.String
+  Parameter 5: Query(pod_id) : java.lang.String
+  Parameter 6: Query(sec_pod_id) : java.lang.String
+  Parameter 7: Header(metainfo) : java.lang.String
+  Parameter 8: Query(layout_id) : java.lang.String
+  Parameter 9: Header(screen-name) : java.lang.String
+  Parameter 10: Header(entryId) : java.lang.String
+  Parameter 11: Header(entryName) : java.lang.String
+  Parameter 12: Header(entryContext) : java.lang.String
+  Parameter 13: Header(vpos) : java.lang.String
+  Parameter 14: Header(hpos) : java.lang.String
+  Parameter 15: QueryMap : java.util.Map
+  Return type: kotlinx.coroutines.flow.g
+
+APK-079 GET api/v1/instamart/auto_suggest
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/instamart/api/b;->f
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Parameter 3: Query(pod_id) : java.lang.String
+  Parameter 4: Query(sec_pod_id) : java.lang.String
+  Parameter 5: Query(auto_suggest.contextual_search_metadata) : java.lang.String
+  Parameter 6: Header(metainfo) : java.lang.String
+  Parameter 7: Query(auto_suggest.query) : java.lang.String
+  Parameter 8: Query(auto_suggest.tracking_id) : java.lang.String
+  Parameter 9: Header(screen-name) : java.lang.String
+  Parameter 10: Query(auto_suggest.page_context) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-080 POST api/v2/launch
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/launchApi/aggregated/d;->a
+  Parameter 1: HeaderMap : java.util.Map
+  Parameter 2: Body : in.swiggy.android.tejas.oldapi.network.requests.e
+  Return type: java.lang.Object
+
+APK-081 POST api/v2/launch
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/launchApi/aggregated/e;->a
+  Parameter 1: HeaderMap : java.util.Map
+  Parameter 2: Body : in.swiggy.android.tejas.oldapi.network.requests.e
+  Return type: java.lang.Object
+
+APK-082 GET /api/v2/fetchNotification
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/nudgeFramework/network/api/a;->a
+  Parameter 1: Query(tenant) : java.lang.String
+  Parameter 2: Query(tag) : java.lang.String
+  Parameter 3: Query(platform) : java.lang.String
+  Return type: java.lang.Object
+
+APK-083 GET /api/v1/overlays
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/overlays/network/a;->b
+  Return type: java.lang.Object
+
+APK-084 POST /api/v1/overlays/poll
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/overlays/network/a;->a
+  Parameter 1: Body : com.swiggy.sf.foundation.gateway.v1.OverlayPollingRequest
+  Return type: java.lang.Object
+
+APK-085 POST /api/v1/ai/analyze
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/pnrscan/network/a;->a
+  Parameter 1: Body : in.swiggy.android.pnrscan.network.b
+  Return type: java.lang.Object
+
+APK-086 POST /api/v1/app/screenshots/upload-urls
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/screenshotcapture/internal/upload/o;->a
+  Parameter 1: Body : in.swiggy.android.screenshotcapture.kit.i
+  Return type: java.lang.Object
+
+APK-087 POST /message-set
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/services/perfprofiling/a;->a
+  Parameter 1: Body : java.util.List
+  Return type: java.lang.Object
+
+APK-088 POST api/v1/json/layout-section/{sectionId}
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/smart_filters/api/a;->b
+  Parameter 1: Path(sectionId) : java.lang.String
+  Parameter 2: Query(lat) : D
+  Parameter 3: Query(lng) : D
+  Parameter 4: Body : java.lang.Object
+  Return type: java.lang.Object
+
+APK-089 POST api/v1/layout-section/{sectionId}
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/smart_filters/api/a;->a
+  Parameter 1: Path(sectionId) : java.lang.String
+  Parameter 2: Query(lat) : D
+  Parameter 3: Query(lng) : D
+  Parameter 4: Body : java.lang.Object
+  Return type: java.lang.Object
+
+APK-090 POST api/v1/track/card
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/api/ISwiggyApi;->getTrackCardList
+  Parameter 1: Body : in.swiggy.android.tejas.commons.feature.tracking.cards.model.CardRequest
+  Return type: io.reactivex.d
+
+APK-091 GET api/v1/order/getSingleOrder
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/apiServices/a;->b
+  Parameter 1: Query(order_id) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-092 DELETE api/v2/cart/client/flush
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/apiServices/a;->c
+  Parameter 1: HeaderMap : java.util.Map
+  Return type: io.reactivex.d
+
+APK-093 GET user/v1/transactions/refunds/active/count
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/apiServices/a;->a
+  Return type: io.reactivex.d
+
+APK-094 GET /api/v1/order/history
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/apiServices/b;->a
+  Parameter 1: Query(order_type) : java.lang.String
+  Parameter 2: Query(count) : I
+  Parameter 3: Query(from_time) : J
+  Return type: io.reactivex.d
+
+APK-095 GET api/v1/dash/oms/order/history
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/apiServices/c;->a
+  Parameter 1: Query(order_type) : java.lang.String
+  Parameter 2: Query(count) : I
+  Parameter 3: Query(from_time) : J
+  Return type: io.reactivex.d
+
+APK-096 GET <runtime URL / empty annotation path>
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/apiServices/d;->a
+  Parameter 1: Url : java.lang.String
+  Return type: io.reactivex.d
+
+APK-097 GET api/v2/help/conversations
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/apiServices/g;->a
+  Parameter 1: Query(offset) : I
+  Parameter 2: Query(limit) : I
+  Parameter 3: Query(status) : java.lang.String
+  Return type: io.reactivex.d
+
+APK-098 GET api/v2/help/issues/order
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/apiServices/g;->b
+  Parameter 1: Query(orderId) : java.lang.String
+  Return type: io.reactivex.d
+
+APK-099 POST api/v2/ratings/create
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/apiServices/g;->d
+  Parameter 1: Body : in.swiggy.android.tejas.oldapi.network.requests.l
+  Return type: io.reactivex.d
+
+APK-100 GET api/v3/help/conversations
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/apiServices/g;->c
+  Parameter 1: Query(conversationStatus) : java.lang.String
+  Return type: io.reactivex.d
+
+APK-101 POST api/v1/app/logout
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/apiServices/h;->a
+  Return type: io.reactivex.d
+
+APK-102 POST api/v1/config/settings
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/apiServices/h;->getSettingsResponse
+  Parameter 1: Body : in.swiggy.android.tejas.oldapi.network.requests.u
+  Parameter 2: Query(silentSession) : Z
+  Parameter 3: Header(page-type) : java.lang.String
+  Return type: io.reactivex.d
+
+APK-103 PUT api/v1/user/mobile/otpverify
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/apiServices/h;->e
+  Parameter 1: Body : in.swiggy.android.tejas.oldapi.network.requests.q
+  Return type: io.reactivex.d
+
+APK-104 PUT api/v1/user/profile
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/apiServices/h;->d
+  Parameter 1: Body : in.swiggy.android.tejas.oldapi.network.requests.r
+  Return type: io.reactivex.d
+
+APK-105 GET api/v2/app/call_otp
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/apiServices/h;->c
+  Parameter 1: Query(mobile) : java.lang.String
+  Return type: io.reactivex.d
+
+APK-106 GET api/v2/app/login_check
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/apiServices/h;->f
+  Parameter 1: Query(mobile) : java.lang.String
+  Return type: io.reactivex.d
+
+APK-107 POST api/v2/app/signup
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/apiServices/h;->b
+  Parameter 1: Body : in.swiggy.android.tejas.oldapi.network.requests.w
+  Return type: io.reactivex.d
+
+APK-108 GET api/v2/app/sms_otp
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/apiServices/h;->g
+  Parameter 1: Query(mobile) : java.lang.String
+  Return type: io.reactivex.d
+
+APK-109 GET api/v3/app/sms_otp
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/apiServices/h;->h
+  Parameter 1: Query(mobile) : java.lang.String
+  Return type: io.reactivex.d
+
+APK-110 GET api/v3/user/profile
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/apiServices/h;->refreshProfile
+  Parameter 1: Header(manufacturer) : java.lang.String
+  Parameter 2: Header(model-name) : java.lang.String
+  Parameter 3: Query(silentSession) : Z
+  Parameter 4: Query(optionalKeys) : java.lang.String
+  Return type: io.reactivex.d
+
+APK-111 GET api/v4/user/profile
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/apiServices/h;->refreshProfileV4
+  Parameter 1: Header(manufacturer) : java.lang.String
+  Parameter 2: Header(model-name) : java.lang.String
+  Parameter 3: Query(silentSession) : Z
+  Parameter 4: Query(optionalKeys) : java.lang.String
+  Return type: io.reactivex.d
+
+APK-112 POST api/v2/cart/client/check_totals
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/apiinterface/ICheckoutClientCartApi;->updateGuestCartMro
+  Parameter 1: HeaderMap : java.util.Map
+  Parameter 2: Body : in.swiggy.android.tejas.oldapi.models.cart.b0
+  Return type: java.lang.Object
+
+APK-113 POST api/v2/cart/client/update
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/apiinterface/ICheckoutClientCartApi;->updateCart
+  Parameter 1: HeaderMap : java.util.Map
+  Parameter 2: Body : in.swiggy.android.tejas.oldapi.models.cart.d
+  Return type: java.lang.Object
+
+APK-114 POST api/v2/cart/client/update
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/apiinterface/ICheckoutClientCartApi;->updateCartMro
+  Parameter 1: HeaderMap : java.util.Map
+  Parameter 2: Body : in.swiggy.android.tejas.oldapi.models.cart.b0
+  Return type: java.lang.Object
+
+APK-115 POST analytics/transactional/device/add/
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/apiinterface/ISpnsApi;->registerDeviceSPNS
+  Parameter 1: Body : in.swiggy.android.tejas.oldapi.network.requests.j
+  Return type: java.lang.Object
+
+APK-116 GET <runtime URL / empty annotation path>
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/c;->g
+  Parameter 1: Url : java.lang.String
+  Return type: io.reactivex.d
+
+APK-117 POST /api/v1/dash/oms/order-job/{orderjob}/status
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/c;->c
+  Parameter 1: Path(orderjob) : java.lang.String
+  Parameter 2: Body : in.swiggy.android.tejas.feature.statusupdate.model.a
+  Return type: io.reactivex.d
+
+APK-118 GET /api/v1/dash/oms/order/{id}/context/ORDER_JOB
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/c;->getOrderByJobId
+  Parameter 1: Path(id) : java.lang.String
+  Return type: io.reactivex.d
+
+APK-119 POST /api/v1/dash/rating
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/c;->b
+  Parameter 1: Body : in.swiggy.android.tejas.feature.feedback.FeedbackRequestBody
+  Return type: io.reactivex.d
+
+APK-120 POST /api/v1/dash/rating/dismiss
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/c;->e
+  Parameter 1: Body : java.util.Map
+  Return type: io.reactivex.t
+
+APK-121 GET /api/v1/timeline/orderjob/{orderJobID}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/c;->a
+  Parameter 1: Path(orderJobID) : java.lang.String
+  Parameter 2: Query(updatedAt) : java.lang.Long
+  Parameter 3: Query(timelineVersion) : java.lang.String
+  Parameter 4: Query(popupInfoShown) : java.lang.Boolean
+  Return type: io.reactivex.d
+
+APK-122 GET /api/v1/timeline/{timelineUserType}/tracking/{trackingId}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/c;->d
+  Parameter 1: Path(timelineUserType) : java.lang.String
+  Parameter 2: Path(trackingId) : java.lang.String
+  Parameter 3: Query(updatedAt) : java.lang.Long
+  Parameter 4: Query(timelineVersion) : java.lang.String
+  Parameter 5: Query(popupInfoShown) : java.lang.Boolean
+  Return type: io.reactivex.d
+
+APK-123 GET /api/v1/tracking/orderjob/{id}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/c;->f
+  Parameter 1: Path(id) : java.lang.String
+  Return type: io.reactivex.d
+
+APK-124 POST /api/v1/user/usersignal
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/commons/feature/dineout/favourite/IDineoutFavouriteApi;->callFavApi
+  Parameter 1: Body : in.swiggy.android.tejas.commons.feature.dineout.favourite.a
+  Return type: java.lang.Object
+
+APK-125 POST /api/v4/order/edit
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/deliveryInstructions/api/IEditOrderApi;->updateDeliveryInstructions
+  Parameter 1: Body : in.swiggy.android.tejas.deliveryInstructions.e
+  Return type: kotlinx.coroutines.flow.g
+
+APK-126 GET api/v1/order/getSingleOrder
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/deliveryInstructions/api/ISingleOrderApi;->getOrderData
+  Parameter 1: Query(order_id) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-127 GET addresses/defaulting/v1/all?clientId={clientId}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/address/v2/api/IAddressMapsJsonApi;->getAllDefaultingAddresses
+  Parameter 1: Query(entityId) : java.lang.String
+  Parameter 2: Query(isGPSOn) : I
+  Parameter 3: Query(requestId) : java.lang.String
+  Parameter 4: Query(source) : I
+  Parameter 5: Query(entityType) : I
+  Parameter 6: Query(marketPlaceId) : I
+  Return type: kotlinx.coroutines.flow.g
+
+APK-128 PUT addresses/event/v1
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/address/v2/api/IAddressMapsJsonApi;->partialAddressUpdate
+  Parameter 1: Body : com.swiggy.locationplatform.centraladdressservice.v1.UpdateAddressEvent
+  Return type: kotlinx.coroutines.flow.g
+
+APK-129 DELETE addresses/v1
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/address/v2/api/IAddressMapsJsonApi;->deleteAddress
+  Parameter 1: Body : com.swiggy.locationplatform.centraladdressservice.v1.DeleteAddressRequest
+  Return type: kotlinx.coroutines.flow.g
+
+APK-130 GET addresses/v1
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/address/v2/api/IAddressMapsJsonApi;->getAddressById
+  Parameter 1: Query(id) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-131 POST addresses/v1
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/address/v2/api/IAddressMapsJsonApi;->addAddress
+  Parameter 1: Body : com.swiggy.locationplatform.centraladdressservice.v1.CreateAddressRequest
+  Return type: kotlinx.coroutines.flow.g
+
+APK-132 POST addresses/v1
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/address/v2/api/IAddressMapsJsonApi;->addAddressV2
+  Parameter 1: Body : com.swiggy.locationplatform.centraladdressservice.v1.CreateAddressRequest
+  Return type: java.lang.Object
+
+APK-133 PUT addresses/v1
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/address/v2/api/IAddressMapsJsonApi;->updateAddress
+  Parameter 1: Body : com.swiggy.locationplatform.centraladdressservice.v1.UpdateAddressRequest
+  Return type: kotlinx.coroutines.flow.g
+
+APK-134 PUT addresses/v1
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/address/v2/api/IAddressMapsJsonApi;->updateAddressV2
+  Parameter 1: Body : com.swiggy.locationplatform.centraladdressservice.v1.UpdateAddressRequest
+  Return type: java.lang.Object
+
+APK-135 GET addresses/v1/all?client_id={client_id}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/address/v2/api/IAddressMapsJsonApi;->getAllAddresses
+  Parameter 1: Query(entityId) : java.lang.String
+  Parameter 2: Query(entityType) : I
+  Parameter 3: Query(marketPlaceId) : I
+  Return type: kotlinx.coroutines.flow.g
+
+APK-136 GET addresses/defaulting/v1/all?clientId={clientId}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/address/v2/api/IAddressMapsProtoApi;->getAllDefaultingAddresses
+  Parameter 1: Query(entityId) : java.lang.String
+  Parameter 2: Query(isGPSOn) : I
+  Parameter 3: Query(requestId) : java.lang.String
+  Parameter 4: Query(source) : I
+  Parameter 5: Query(entityType) : I
+  Parameter 6: Query(marketPlaceId) : I
+  Return type: kotlinx.coroutines.flow.g
+
+APK-137 PUT addresses/event/v1
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/address/v2/api/IAddressMapsProtoApi;->partialAddressUpdate
+  Parameter 1: Body : com.swiggy.locationplatform.centraladdressservice.v1.UpdateAddressEvent
+  Return type: kotlinx.coroutines.flow.g
+
+APK-138 DELETE addresses/v1
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/address/v2/api/IAddressMapsProtoApi;->deleteAddress
+  Parameter 1: Body : com.swiggy.locationplatform.centraladdressservice.v1.DeleteAddressRequest
+  Return type: kotlinx.coroutines.flow.g
+
+APK-139 GET addresses/v1
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/address/v2/api/IAddressMapsProtoApi;->getAddressById
+  Parameter 1: Query(id) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-140 POST addresses/v1
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/address/v2/api/IAddressMapsProtoApi;->addAddress
+  Parameter 1: Body : com.swiggy.locationplatform.centraladdressservice.v1.CreateAddressRequest
+  Return type: kotlinx.coroutines.flow.g
+
+APK-141 POST addresses/v1
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/address/v2/api/IAddressMapsProtoApi;->addAddressV2
+  Parameter 1: Body : com.swiggy.locationplatform.centraladdressservice.v1.CreateAddressRequest
+  Return type: java.lang.Object
+
+APK-142 PUT addresses/v1
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/address/v2/api/IAddressMapsProtoApi;->updateAddress
+  Parameter 1: Body : com.swiggy.locationplatform.centraladdressservice.v1.UpdateAddressRequest
+  Return type: kotlinx.coroutines.flow.g
+
+APK-143 PUT addresses/v1
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/address/v2/api/IAddressMapsProtoApi;->updateAddressV2
+  Parameter 1: Body : com.swiggy.locationplatform.centraladdressservice.v1.UpdateAddressRequest
+  Return type: java.lang.Object
+
+APK-144 GET addresses/v1/all?client_id={client_id}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/address/v2/api/IAddressMapsProtoApi;->getAllAddresses
+  Parameter 1: Query(entityId) : java.lang.String
+  Parameter 2: Query(entityType) : I
+  Parameter 3: Query(marketPlaceId) : I
+  Return type: kotlinx.coroutines.flow.g
+
+APK-145 POST api/v2/pop/address/add
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/address/v2/api/IAddressMapsProtoApi;->addPopAddress
+  Parameter 1: Body : in.swiggy.android.tejas.feature.address.model.i
+  Return type: kotlinx.coroutines.flow.g
+
+APK-146 POST /api/v1/aggregated-entity/{pageIdentifier}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/aggregratedEntity/IAggregatedEntityAPI;->getAggregatedEntityProto
+  Parameter 1: Path(pageIdentifier) : java.lang.String
+  Parameter 2: Query(lat) : java.lang.String
+  Parameter 3: Query(lng) : java.lang.String
+  Parameter 4: Body : java.lang.Object
+  Return type: java.lang.Object
+
+APK-147 POST /api/v1/json/aggregated-entity/{pageIdentifier}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/aggregratedEntity/IAggregatedEntityAPI;->getAggregatedEntityJson
+  Parameter 1: Path(pageIdentifier) : java.lang.String
+  Parameter 2: Query(lat) : java.lang.String
+  Parameter 3: Query(lng) : java.lang.String
+  Parameter 4: Body : java.lang.Object
+  Return type: java.lang.Object
+
+APK-148 POST /api/v1/cloned-user/whitelist
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/appBlocking/api/IClonedAppWhiteListApi;->requestForWhiteList
+  Parameter 1: Body : com.swiggy.tns.duplix.v1.WhitelistClonedUserRequest
+  Return type: kotlinx.coroutines.flow.g
+
+APK-149 POST /api/v1/cloned-user/whitelist
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/appBlocking/api/IClonedAppWhitelistJsonApi;->requestForWhiteList
+  Parameter 1: Body : com.swiggy.tns.duplix.v1.WhitelistClonedUserRequest
+  Return type: kotlinx.coroutines.flow.g
+
+APK-150 POST api/v2/app/login/verify
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/auth/api/IOtpVerifyApi;->verifyOtp
+  Parameter 1: Header(manufacturer) : java.lang.String
+  Parameter 2: Header(model-name) : java.lang.String
+  Parameter 3: Body : in.swiggy.android.tejas.feature.auth.models.c
+  Parameter 4: Query(otp_source) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-151 POST api/v3/app/login/verify
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/auth/api/IOtpVerifyApi;->verifyOtpV3
+  Parameter 1: Header(manufacturer) : java.lang.String
+  Parameter 2: Header(model-name) : java.lang.String
+  Parameter 3: Body : in.swiggy.android.tejas.feature.auth.models.c
+  Parameter 4: Query(otp_source) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-152 POST /api/v3/app/shell_login_check
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/auth/api/IShellLoginApi;->shellLoginCheck
+  Return type: kotlinx.coroutines.flow.g
+
+APK-153 PUT v1/cancel-only/order/{orderId}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/cancellation/ICancelOnlyApi;->cancelOnly
+  Parameter 1: Path(orderId) : java.lang.String
+  Parameter 2: Body : in.swiggy.android.tejas.feature.cancellation.b
+  Return type: java.lang.Object
+
+APK-154 GET /api/v3/help/conversations?conversationStatus={conversationStatus}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/chathead/api/IChatApi;->getChatDetails
+  Return type: kotlinx.coroutines.flow.g
+
+APK-155 GET /api/v4/help/conversations?conversationStatus={conversationStatus}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/chathead/api/IChatV2Api;->fetchActiveChats
+  Return type: java.lang.Object
+
+APK-156 POST chat/v1/conversations/{conversationID}/messages
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/chatnotification/api/IChatNotificationApi;->sendChatMessageApi
+  Parameter 1: Path(conversationID) : java.lang.String
+  Parameter 2: Header(x-message-id) : java.lang.String
+  Parameter 3: Body : in.swiggy.android.tejas.feature.chatnotification.model.b
+  Return type: java.lang.Object
+
+APK-157 POST /api/v1/cross-pollination/update-engagement
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/crosspollination/a;->a
+  Parameter 1: Query(entityId) : java.lang.String
+  Parameter 2: Query(engagementId) : java.lang.String
+  Parameter 3: Query(engagementEntityType) : java.lang.String
+  Parameter 4: Query(engagementEntityStatus) : java.lang.String
+  Return type: java.lang.Object
+
+APK-158 POST api/v1/json/layout-section/CROSS_SELL
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/crosssell/ICrossSellAPI;->getCrossSellCollectionJSON
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Parameter 3: Body : in.swiggy.android.tejas.feature.crosssell.model.a
+  Return type: java.lang.Object
+
+APK-159 POST api/v1/layout-section/CROSS_SELL
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/crosssell/ICrossSellAPI;->getCrossSellCollection
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Parameter 3: Body : in.swiggy.android.tejas.feature.crosssell.model.a
+  Return type: java.lang.Object
+
+APK-160 GET /client/metric/event/gtm
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/dataplatform/api/IMessageApi;->sendGTMEvent
+  Parameter 1: Query(e) : java.lang.String
+  Parameter 2: QueryMap : java.util.Map
+  Return type: io.reactivex.t
+
+APK-161 POST /message
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/dataplatform/api/IMessageApi;->sendMessage
+  Parameter 1: Body : in.swiggy.android.tejas.feature.dataplatform.model.a
+  Return type: io.reactivex.t
+
+APK-162 POST /message-set
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/dataplatform/api/IMessageApi;->sendBulkMessage
+  Parameter 1: Body : java.util.List
+  Return type: io.reactivex.t
+
+APK-163 GET api/v1/json/skeleton
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/discovery/pageskeleton/IPageSkeletonAPI;->getPageSkeletonDataJson
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Return type: kotlinx.coroutines.flow.g
+
+APK-164 POST api/v1/json/unified-entity
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/discovery/pageskeleton/IPageSkeletonAPI;->getAggregatedPageSkeletonDataJSON
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Parameter 3: Query(isPreferredBusinessLine) : Z
+  Parameter 4: Header(isfoodpagevisit) : java.lang.String
+  Parameter 5: Header(is_location_saved) : java.lang.String
+  Parameter 6: Header(push_notifications_status) : java.lang.String
+  Parameter 7: Body : in.swiggy.android.tejas.feature.discovery.pageskeleton.model.c
+  Return type: kotlinx.coroutines.flow.g
+
+APK-165 GET api/v1/skeleton
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/discovery/pageskeleton/IPageSkeletonAPI;->getPageSkeletonData
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Return type: kotlinx.coroutines.flow.g
+
+APK-166 POST api/v1/unified-entity
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/discovery/pageskeleton/IPageSkeletonAPI;->getAggregatedPageSkeletonData
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Parameter 3: Query(isPreferredBusinessLine) : Z
+  Parameter 4: Header(isfoodpagevisit) : java.lang.String
+  Parameter 5: Header(is_location_saved) : java.lang.String
+  Parameter 6: Header(push_notifications_status) : java.lang.String
+  Parameter 7: Body : in.swiggy.android.tejas.feature.discovery.pageskeleton.model.c
+  Return type: kotlinx.coroutines.flow.g
+
+APK-167 GET <runtime URL / empty annotation path>
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/dynamicwidget/network/api/a;->a
+  Parameter 1: Url : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-168 POST api/v1/ratings/order
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/edm/IEdmApi;->postEdmRating
+  Parameter 1: Body : in.swiggy.android.tejas.feature.edm.model.EdmPostableRating
+  Return type: io.reactivex.d
+
+APK-169 GET api/v1/landing-page/POST_SIGNUP
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/giftreveal/postsignup/IGiftRevealPostSignupApi;->giftPostSignUp
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Return type: kotlinx.coroutines.flow.g
+
+APK-170 POST api/v1/reward
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/giftreveal/reward/IGiftRevealRewardApi;->giftReward
+  Return type: kotlinx.coroutines.flow.g
+
+APK-171 GET <runtime URL / empty annotation path>
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/google/directions/IDirectionsAPI;->getDirections
+  Parameter 1: Url : java.lang.String
+  Return type: io.reactivex.d
+
+APK-172 POST /directions
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/google/directions/IDirectionsSwiggyApi;->getDirections
+  Parameter 1: Body : in.swiggy.android.tejas.feature.google.directionscache.api.c
+  Return type: io.reactivex.d
+
+APK-173 GET <runtime URL / empty annotation path>
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/google/directionscache/api/IDirectionsGoogleApi;->getDirections
+  Parameter 1: Url : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-174 POST /directions
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/google/directionscache/api/IDirectionsSwiggyApi;->getDirections
+  Parameter 1: Body : in.swiggy.android.tejas.feature.google.directionscache.api.c
+  Return type: kotlinx.coroutines.flow.g
+
+APK-175 GET <runtime URL / empty annotation path>
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/google/googlereversegeocode/IGoogleReverseGeocodeAPI;->getReverseGeocode
+  Parameter 1: Url : java.lang.String
+  Return type: io.reactivex.d
+
+APK-176 GET https://www.swiggy.com/mapi/help/resources
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/helpcenter/IHelpCenterAPI;->getWebResourceList
+  Return type: io.reactivex.d
+
+APK-177 POST /api/v1/food
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/home/IDiscoveryAPI;->getFoodListing
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Parameter 3: Header(isfoodpagevisit) : Z
+  Parameter 4: Header(isdefaultpage) : Z
+  Parameter 5: Header(is_location_saved) : java.lang.Boolean
+  Parameter 6: Body : java.lang.Object
+  Parameter 7: Query(isTopNavEntry) : Z
+  Parameter 8: Header(push_notifications_status) : java.lang.String
+  Parameter 9: Query(isFirstCall) : Z
+  Return type: java.lang.Object
+
+APK-178 POST /api/v1/shell/toing-app
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/home/IDiscoveryAPI;->getToingFoodListing
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Parameter 3: Header(isfoodpagevisit) : Z
+  Parameter 4: Header(isdefaultpage) : Z
+  Parameter 5: Header(is_location_saved) : java.lang.Boolean
+  Parameter 6: Body : java.lang.Object
+  Parameter 7: Query(isTopNavEntry) : Z
+  Parameter 8: Header(push_notifications_status) : java.lang.String
+  Parameter 9: Query(isFirstCall) : Z
+  Return type: java.lang.Object
+
+APK-179 POST /api/v2/food
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/home/IDiscoveryAPI;->getFoodListingV2
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Parameter 3: Header(isfoodpagevisit) : Z
+  Parameter 4: Header(isdefaultpage) : Z
+  Parameter 5: Header(is_location_saved) : java.lang.Boolean
+  Parameter 6: Body : java.lang.Object
+  Parameter 7: Query(isTopNavEntry) : Z
+  Parameter 8: Header(push_notifications_status) : java.lang.String
+  Parameter 9: Header(pathways_enabled) : Z
+  Parameter 10: Query(isFirstCall) : Z
+  Parameter 11: Query(foodPathwaysRequestedTab) : java.lang.String
+  Return type: java.lang.Object
+
+APK-180 GET /api/v2/home
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/home/IDiscoveryAPI;->getHomeListing
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Parameter 3: Query(pageLimit) : java.lang.Integer
+  Parameter 4: Query(pageOffset) : java.lang.String
+  Parameter 5: Query(segmentId) : java.lang.String
+  Parameter 6: Query(segmentDomain) : java.lang.String
+  Parameter 7: Query(userSignalKey) : java.lang.String
+  Parameter 8: Query(userSignalValue) : java.lang.String
+  Parameter 9: Header(is_location_saved) : java.lang.Boolean
+  Parameter 10: Header(push_notifications_status) : java.lang.String
+  Return type: java.lang.Object
+
+APK-181 POST /api/v1/json/food
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/home/IDiscoveryJsonApi;->getFoodListing
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Parameter 3: Header(isfoodpagevisit) : Z
+  Parameter 4: Header(isdefaultpage) : Z
+  Parameter 5: Header(is_location_saved) : java.lang.Boolean
+  Parameter 6: Body : java.lang.Object
+  Parameter 7: Query(isTopNavEntry) : Z
+  Parameter 8: Header(push_notifications_status) : java.lang.String
+  Parameter 9: Query(isFirstCall) : Z
+  Return type: java.lang.Object
+
+APK-182 POST /api/v1/json/shell/toing-app
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/home/IDiscoveryJsonApi;->getToingFoodListing
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Parameter 3: Header(isfoodpagevisit) : Z
+  Parameter 4: Header(isdefaultpage) : Z
+  Parameter 5: Header(is_location_saved) : java.lang.Boolean
+  Parameter 6: Body : java.lang.Object
+  Parameter 7: Query(isTopNavEntry) : Z
+  Parameter 8: Header(push_notifications_status) : java.lang.String
+  Parameter 9: Query(isFirstCall) : Z
+  Return type: java.lang.Object
+
+APK-183 GET /api/v2/home/json
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/home/IDiscoveryJsonApi;->getHomeListing
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Parameter 3: Query(pageLimit) : java.lang.Integer
+  Parameter 4: Query(pageOffset) : java.lang.String
+  Parameter 5: Query(segmentId) : java.lang.String
+  Parameter 6: Query(segmentDomain) : java.lang.String
+  Parameter 7: Query(userSignalKey) : java.lang.String
+  Parameter 8: Query(userSignalValue) : java.lang.String
+  Parameter 9: Header(is_location_saved) : java.lang.Boolean
+  Parameter 10: Header(push_notifications_status) : java.lang.String
+  Return type: java.lang.Object
+
+APK-184 POST /api/v2/json/food
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/home/IDiscoveryJsonApi;->getFoodListingV2
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Parameter 3: Header(isfoodpagevisit) : Z
+  Parameter 4: Header(isdefaultpage) : Z
+  Parameter 5: Header(is_location_saved) : java.lang.Boolean
+  Parameter 6: Body : java.lang.Object
+  Parameter 7: Query(isTopNavEntry) : Z
+  Parameter 8: Header(push_notifications_status) : java.lang.String
+  Parameter 9: Header(pathways_enabled) : Z
+  Parameter 10: Query(isFirstCall) : Z
+  Parameter 11: Query(foodPathwaysRequestedTab) : java.lang.String
+  Return type: java.lang.Object
+
+APK-185 GET <runtime URL / empty annotation path>
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/home/grid/service/b;->a
+  Parameter 1: Url : java.lang.String
+  Return type: java.lang.Object
+
+APK-186 POST api/v1/launch-configs
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/home/launchconfig/ILaunchConfigAPI;->getLaunchConfigData
+  Parameter 1: Body : in.swiggy.android.tejas.feature.home.launchconfig.model.b
+  Return type: kotlinx.coroutines.flow.g
+
+APK-187 PUT api/v1/profiling/attributes
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/home/signal/ISignalAPI;->callSignalAPI
+  Parameter 1: Body : in.swiggy.android.tejas.feature.home.signal.b
+  Return type: java.lang.Object
+
+APK-188 GET api/v1/cricket/match-status
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/ipl/IMatchHoursAPI;->fetchMatchState
+  Return type: java.lang.Object
+
+APK-189 POST api/v1/events/event-status
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/ipl/IMatchHoursAPI;->fetchMultiEventStatus
+  Parameter 1: Body : in.swiggy.android.tejas.feature.matchhours.e
+  Return type: java.lang.Object
+
+APK-190 POST /api/v1/disliked
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/landing/ILandingAPI;->getHiddenRestos
+  Parameter 1: Query(lat) : java.lang.String
+  Parameter 2: Query(lng) : java.lang.String
+  Parameter 3: Body : java.lang.Object
+  Return type: java.lang.Object
+
+APK-191 POST /api/v1/favourites
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/landing/ILandingAPI;->getFavorites
+  Parameter 1: Query(lat) : java.lang.String
+  Parameter 2: Query(lng) : java.lang.String
+  Parameter 3: Body : java.lang.Object
+  Return type: java.lang.Object
+
+APK-192 POST /api/v1/food_bites_page
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/landing/ILandingAPI;->getFoodReelsData
+  Parameter 1: Query(collection_identifier) : java.lang.String
+  Parameter 2: Query(lat) : java.lang.String
+  Parameter 3: Query(lng) : java.lang.String
+  Parameter 4: Query(bitesPrimaryFilter) : java.lang.String
+  Parameter 5: Body : java.lang.Object
+  Return type: java.lang.Object
+
+APK-193 POST /api/v1/irctc
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/landing/ILandingAPI;->getIrctcData
+  Parameter 1: Query(lat) : java.lang.String
+  Parameter 2: Query(lng) : java.lang.String
+  Parameter 3: Body : java.lang.Object
+  Return type: java.lang.Object
+
+APK-194 GET /api/v1/item_collection/json/{collection_id}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/landing/ILandingAPI;->getItemCollectionV1Json
+  Parameter 1: Path(collection_id) : java.lang.String
+  Parameter 2: Query(restaurant_id) : java.lang.String
+  Parameter 3: Query(item_id) : java.lang.String
+  Parameter 4: Query(lat) : java.lang.String
+  Parameter 5: Query(lng) : java.lang.String
+  Parameter 6: Query(tags) : java.lang.String
+  Return type: java.lang.Object
+
+APK-195 GET /api/v1/item_collection/{collection_id}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/landing/ILandingAPI;->getItemCollectionV1
+  Parameter 1: Path(collection_id) : java.lang.String
+  Parameter 2: Query(restaurant_id) : java.lang.String
+  Parameter 3: Query(item_id) : java.lang.String
+  Parameter 4: Query(lat) : java.lang.String
+  Parameter 5: Query(lng) : java.lang.String
+  Parameter 6: Query(tags) : java.lang.String
+  Return type: java.lang.Object
+
+APK-196 POST /api/v1/json/disliked
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/landing/ILandingAPI;->getHiddenRestoJson
+  Parameter 1: Query(lat) : java.lang.String
+  Parameter 2: Query(lng) : java.lang.String
+  Parameter 3: Body : java.lang.Object
+  Return type: java.lang.Object
+
+APK-197 POST /api/v1/json/favourites
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/landing/ILandingAPI;->getFavoritesJson
+  Parameter 1: Query(lat) : java.lang.String
+  Parameter 2: Query(lng) : java.lang.String
+  Parameter 3: Body : java.lang.Object
+  Return type: java.lang.Object
+
+APK-198 POST /api/v1/json/food_bites_page
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/landing/ILandingAPI;->getFoodReelsDataJson
+  Parameter 1: Query(collection_identifier) : java.lang.String
+  Parameter 2: Query(lat) : java.lang.String
+  Parameter 3: Query(lng) : java.lang.String
+  Parameter 4: Query(bitesPrimaryFilter) : java.lang.String
+  Parameter 5: Body : java.lang.Object
+  Return type: java.lang.Object
+
+APK-199 POST /api/v1/json/irctc
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/landing/ILandingAPI;->getIrctcDataJson
+  Parameter 1: Query(lat) : java.lang.String
+  Parameter 2: Query(lng) : java.lang.String
+  Parameter 3: Body : java.lang.Object
+  Return type: java.lang.Object
+
+APK-200 GET /api/v1/json/landing-page/{landing}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/landing/ILandingAPI;->getFeatureCollectionJSON
+  Parameter 1: Path(landing) : java.lang.String
+  Parameter 2: Query(lat) : D
+  Parameter 3: Query(lng) : D
+  Parameter 4: Query(pageLimit) : java.lang.Integer
+  Parameter 5: Query(pageOffset) : java.lang.String
+  Parameter 6: Query(sourcePage) : java.lang.String
+  Parameter 7: HeaderMap : java.util.Map
+  Parameter 8: Query(vegFilter) : java.lang.Boolean
+  Return type: java.lang.Object
+
+APK-201 POST /api/v1/json/landing-page/{landing}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/landing/ILandingAPI;->getFeatureCollectionJSONWithRequestBody
+  Parameter 1: Path(landing) : java.lang.String
+  Parameter 2: Query(lat) : D
+  Parameter 3: Query(lng) : D
+  Parameter 4: Query(pageLimit) : java.lang.Integer
+  Parameter 5: Query(pageOffset) : java.lang.String
+  Parameter 6: Body : java.lang.Object
+  Parameter 7: HeaderMap : java.util.Map
+  Parameter 8: Query(vegFilter) : java.lang.Boolean
+  Return type: java.lang.Object
+
+APK-202 GET /api/v1/landing-page/{landing}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/landing/ILandingAPI;->getFeatureCollection
+  Parameter 1: Path(landing) : java.lang.String
+  Parameter 2: Query(lat) : D
+  Parameter 3: Query(lng) : D
+  Parameter 4: Query(pageLimit) : java.lang.Integer
+  Parameter 5: Query(pageOffset) : java.lang.String
+  Parameter 6: Query(sourcePage) : java.lang.String
+  Parameter 7: HeaderMap : java.util.Map
+  Parameter 8: Query(vegFilter) : java.lang.Boolean
+  Return type: java.lang.Object
+
+APK-203 POST /api/v1/landing-page/{landing}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/landing/ILandingAPI;->getFeatureCollectionWithRequestBody
+  Parameter 1: Path(landing) : java.lang.String
+  Parameter 2: Query(lat) : D
+  Parameter 3: Query(lng) : D
+  Parameter 4: Query(pageLimit) : java.lang.Integer
+  Parameter 5: Query(pageOffset) : java.lang.String
+  Parameter 6: Body : java.lang.Object
+  Parameter 7: HeaderMap : java.util.Map
+  Parameter 8: Query(vegFilter) : java.lang.Boolean
+  Return type: java.lang.Object
+
+APK-204 POST /api/v2/item_collection/json/{collection_id}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/landing/ILandingAPI;->getItemCollectionV2Json
+  Parameter 1: Path(collection_id) : java.lang.String
+  Parameter 2: Query(lat) : java.lang.String
+  Parameter 3: Query(lng) : java.lang.String
+  Parameter 4: Query(restaurantId) : java.lang.String
+  Parameter 5: Body : java.lang.Object
+  Return type: java.lang.Object
+
+APK-205 POST /api/v2/item_collection/{collection_id}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/landing/ILandingAPI;->getItemCollectionV2
+  Parameter 1: Path(collection_id) : java.lang.String
+  Parameter 2: Query(lat) : java.lang.String
+  Parameter 3: Query(lng) : java.lang.String
+  Parameter 4: Query(restaurantId) : java.lang.String
+  Parameter 5: Body : java.lang.Object
+  Return type: java.lang.Object
+
+APK-206 POST /api/v2/meal_collection/json/{collection_id}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/landing/ILandingAPI;->getMealCollectionJson
+  Parameter 1: Path(collection_id) : java.lang.String
+  Parameter 2: Query(lat) : java.lang.String
+  Parameter 3: Query(lng) : java.lang.String
+  Parameter 4: Query(restaurantId) : java.lang.String
+  Parameter 5: Body : java.lang.Object
+  Return type: java.lang.Object
+
+APK-207 POST /api/v2/meal_collection/{collection_id}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/landing/ILandingAPI;->getMealCollection
+  Parameter 1: Path(collection_id) : java.lang.String
+  Parameter 2: Query(lat) : java.lang.String
+  Parameter 3: Query(lng) : java.lang.String
+  Parameter 4: Query(restaurantId) : java.lang.String
+  Parameter 5: Body : java.lang.Object
+  Return type: java.lang.Object
+
+APK-208 POST /api/v3/collection/restaurant/json/{collectionId}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/landing/ILandingAPI;->getCollectionV3Json
+  Parameter 1: Path(collectionId) : java.lang.String
+  Parameter 2: Query(lat) : java.lang.String
+  Parameter 3: Query(lng) : java.lang.String
+  Parameter 4: Query(bitesPrimaryFilter) : java.lang.String
+  Parameter 5: Body : java.lang.Object
+  Return type: java.lang.Object
+
+APK-209 POST /api/v3/collection/restaurant/{collectionId}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/landing/ILandingAPI;->getCollectionV3
+  Parameter 1: Path(collectionId) : java.lang.String
+  Parameter 2: Query(lat) : java.lang.String
+  Parameter 3: Query(lng) : java.lang.String
+  Parameter 4: Query(bitesPrimaryFilter) : java.lang.String
+  Parameter 5: Body : java.lang.Object
+  Return type: java.lang.Object
+
+APK-210 POST api/v1/config/preLaunch
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/launch/prelaunch/IPreLaunchAPI;->getPreLaunchData
+  Parameter 1: Body : in.swiggy.android.tejas.oldapi.network.requests.s
+  Return type: kotlinx.coroutines.flow.g
+
+APK-211 GET <runtime URL / empty annotation path>
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/listing/doubleverifytracker/interfaces/IThirdPartyAdsTrackerApi;->fireTrackPixelUrl
+  Parameter 1: Url : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-212 GET api/v1/location_based_features
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/locationbased/ILocationBasedFeatureAPI;->getLocationBasedFeatures
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Parameter 3: Query(features) : java.util.List
+  Return type: io.reactivex.d
+
+APK-213 POST api/v1/user/favorite
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/menu/IFavouriteAPI;->markFavourite
+  Parameter 1: Body : in.swiggy.android.tejas.oldapi.network.requests.o
+  Return type: java.lang.Object
+
+APK-214 GET /api/v1/item_collection/json/{collection_id}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/menu/IMenuItemCollection;->getItemCollectionJson
+  Parameter 1: Path(collection_id) : java.lang.String
+  Parameter 2: Query(restaurant_id) : java.lang.String
+  Parameter 3: Query(lat) : D
+  Parameter 4: Query(lng) : D
+  Return type: java.lang.Object
+
+APK-215 GET /api/v1/item_collection/{collection_id}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/menu/IMenuItemCollection;->getItemCollection
+  Parameter 1: Path(collection_id) : java.lang.String
+  Parameter 2: Query(restaurant_id) : java.lang.String
+  Parameter 3: Query(lat) : D
+  Parameter 4: Query(lng) : D
+  Return type: java.lang.Object
+
+APK-216 POST /api/v1/json/layout-section/{sectionId}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/menu/IMenuListingAPI;->getCrossSellJsonItems
+  Parameter 1: Path(sectionId) : java.lang.String
+  Parameter 2: Query(lat) : D
+  Parameter 3: Query(lng) : D
+  Parameter 4: Query(group_cart_id) : java.lang.String
+  Parameter 5: Body : java.lang.Object
+  Return type: java.lang.Object
+
+APK-217 POST /api/v1/layout-section/{sectionId}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/menu/IMenuListingAPI;->getCrossSellItems
+  Parameter 1: Path(sectionId) : java.lang.String
+  Parameter 2: Query(lat) : D
+  Parameter 3: Query(lng) : D
+  Parameter 4: Query(group_cart_id) : java.lang.String
+  Parameter 5: Body : java.lang.Object
+  Return type: java.lang.Object
+
+APK-218 POST /api/v1/menu/search
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/menu/IMenuListingAPI;->getSearchListing
+  Parameter 1: Body : in.swiggy.android.tejas.feature.menu.search.PostableSearchRequest
+  Parameter 2: Query(lat) : D
+  Parameter 3: Query(lng) : D
+  Parameter 4: Query(group_cart_id) : java.lang.String
+  Return type: java.lang.Object
+
+APK-219 POST /api/v1/menu/search/json
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/menu/IMenuListingAPI;->getSearchJsonListing
+  Parameter 1: Body : in.swiggy.android.tejas.feature.menu.search.PostableSearchRequest
+  Parameter 2: Query(lat) : D
+  Parameter 3: Query(lng) : D
+  Parameter 4: Query(group_cart_id) : java.lang.String
+  Return type: java.lang.Object
+
+APK-220 POST /api/v2/dynamicmenu/{restaurantId}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/menu/IMenuListingAPI;->getDynamicMenuListing
+  Parameter 1: Path(restaurantId) : java.lang.String
+  Parameter 2: Query(complete-menu) : Z
+  Parameter 3: Query(lat) : D
+  Parameter 4: Query(lng) : D
+  Parameter 5: Query(group_cart_id) : java.lang.String
+  Parameter 6: Body : in.swiggy.android.tejas.feature.menu.PostableMenuRequest
+  Parameter 7: Header(load-full-menu) : Z
+  Parameter 8: HeaderMap : java.util.Map
+  Return type: java.lang.Object
+
+APK-221 POST /api/v2/menu/{restaurantId}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/menu/IMenuListingAPI;->getMenuListing
+  Parameter 1: Path(restaurantId) : java.lang.String
+  Parameter 2: Query(complete-menu) : Z
+  Parameter 3: Query(lat) : D
+  Parameter 4: Query(lng) : D
+  Parameter 5: Query(group_cart_id) : java.lang.String
+  Parameter 6: Body : in.swiggy.android.tejas.feature.menu.PostableMenuRequest
+  Parameter 7: HeaderMap : java.util.Map
+  Return type: java.lang.Object
+
+APK-222 POST /api/v2/resolve/menu/{restaurantName}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/menu/IMenuListingAPI;->getResolveMenuListing
+  Parameter 1: Path(restaurantName) : java.lang.String
+  Parameter 2: Query(complete-menu) : Z
+  Parameter 3: Query(lat) : D
+  Parameter 4: Query(lng) : D
+  Parameter 5: Query(group_cart_id) : java.lang.String
+  Parameter 6: Body : in.swiggy.android.tejas.feature.menu.PostableMenuRequest
+  Return type: java.lang.Object
+
+APK-223 GET /api/v2/staticmenu/{restaurantId}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/menu/IMenuListingAPI;->getStaticMenuListing
+  Parameter 1: Path(restaurantId) : java.lang.String
+  Parameter 2: Query(complete-menu) : Z
+  Parameter 3: Query(lat) : D
+  Parameter 4: Query(lng) : D
+  Parameter 5: Query(group_cart_id) : java.lang.String
+  Parameter 6: HeaderMap : java.util.Map
+  Return type: java.lang.Object
+
+APK-224 POST api/v1/user/dislike
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/menu/explicitsignals/IDislikeApi;->markDislike
+  Parameter 1: Body : in.swiggy.android.tejas.feature.menu.explicitsignals.d
+  Return type: kotlinx.coroutines.flow.g
+
+APK-225 GET /api/v4/restaurant/otheroutlets/{restaurantId}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/menu/outletselector/IOldOutletSelectorApi;->getOldOutletSelectorList
+  Parameter 1: Path(restaurantId) : java.lang.String
+  Parameter 2: Query(lat) : D
+  Parameter 3: Query(lng) : D
+  Parameter 4: Query(slug) : java.lang.String
+  Parameter 5: Query(sld) : Z
+  Return type: java.lang.Object
+
+APK-226 POST /api/v1/json/layout-section/{sectionId}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/menu/outletselector/IOutletSelectorApi;->getOutletSelectorsJsonList
+  Parameter 1: Path(sectionId) : java.lang.String
+  Parameter 2: Query(lat) : D
+  Parameter 3: Query(lng) : D
+  Parameter 4: Body : java.lang.Object
+  Return type: java.lang.Object
+
+APK-227 POST /api/v1/layout-section/{sectionId}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/menu/outletselector/IOutletSelectorApi;->getOutletSelectorsList
+  Parameter 1: Path(sectionId) : java.lang.String
+  Parameter 2: Query(lat) : D
+  Parameter 3: Query(lng) : D
+  Parameter 4: Body : java.lang.Object
+  Return type: java.lang.Object
+
+APK-228 GET /api/v1/restaurant/brand/{brandId}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/menu/swiggydirect/api/IBrandApi;->getRestaurantID
+  Parameter 1: Path(brandId) : java.lang.String
+  Parameter 2: Query(session_ref) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-229 POST <runtime URL / empty annotation path>
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/moneta/IMonetaAPI;->updateOrderStatus
+  Parameter 1: Url : java.lang.String
+  Parameter 2: Body : in.swiggy.android.tejas.feature.moneta.model.a
+  Return type: io.reactivex.d
+
+APK-230 GET /api/v2/offer
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/offers/IOfferV2API;->getV2CouponList
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Parameter 3: Query(source_page) : java.lang.String
+  Parameter 4: Query(restaurant_id) : java.lang.String
+  Parameter 5: Query(cart_value) : D
+  Return type: java.lang.Object
+
+APK-231 GET /api/v2/offer/json
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/offers/IOfferV2API;->getV2CouponListJSON
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Parameter 3: Query(source_page) : java.lang.String
+  Parameter 4: Query(restaurant_id) : java.lang.String
+  Parameter 5: Query(cart_value) : D
+  Return type: java.lang.Object
+
+APK-232 GET /api/v3/BUSINESS_LINE_DINEOUT/offer
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/offers/IOfferV3DineoutAPI;->getV3DineoutCouponList
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Parameter 3: Query(source_page) : java.lang.String
+  Parameter 4: Query(restaurant_id) : java.lang.String
+  Parameter 5: Query(cart_value) : D
+  Parameter 6: Query(dealCategory) : java.lang.String
+  Return type: java.lang.Object
+
+APK-233 GET /api/v3/BUSINESS_LINE_DINEOUT/offer/json
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/offers/IOfferV3DineoutAPI;->getV3DineoutCouponListJSON
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Parameter 3: Query(source_page) : java.lang.String
+  Parameter 4: Query(restaurant_id) : java.lang.String
+  Parameter 5: Query(cart_value) : D
+  Parameter 6: Query(dealCategory) : java.lang.String
+  Return type: java.lang.Object
+
+APK-234 POST /api/v1/offer
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/offers/IOffersApi;->getOfferDetail
+  Parameter 1: Body : in.swiggy.android.tejas.feature.offers.PostableOfferRequest
+  Parameter 2: Query(lat) : D
+  Parameter 3: Query(lng) : D
+  Return type: java.lang.Object
+
+APK-235 GET api/v1/json/account/orders
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/order/history/IOrderHistoryJsonAPI;->getGiftingOrderHistory
+  Parameter 1: Query(order_type) : java.lang.String
+  Parameter 2: Query(order_count) : I
+  Parameter 3: Query(last_order_timestamp) : java.lang.String
+  Return type: io.reactivex.t
+
+APK-236 GET api/v1/json/account/orders
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/order/history/IOrderHistoryJsonAPI;->getOrderHistory
+  Parameter 1: Query(order_count) : I
+  Parameter 2: Query(order_id) : java.lang.String
+  Return type: io.reactivex.t
+
+APK-237 GET api/v1/account/orders
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/order/history/IOrderHistoryProtoAPI;->getGiftingOrderHistory
+  Parameter 1: Query(order_type) : java.lang.String
+  Parameter 2: Query(order_count) : I
+  Parameter 3: Query(last_order_timestamp) : java.lang.String
+  Return type: io.reactivex.t
+
+APK-238 GET api/v1/account/orders
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/order/history/IOrderHistoryProtoAPI;->getOrderHistory
+  Parameter 1: Query(order_count) : I
+  Parameter 2: Query(order_id) : java.lang.String
+  Return type: io.reactivex.t
+
+APK-239 GET api/v1/order-job/{order_id}/refund
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/order/refund/api/IDashRefundDetailsApi;->getDashRefundDetails
+  Parameter 1: Path(order_id) : java.lang.String
+  Return type: io.reactivex.t
+
+APK-240 GET checkout-service/external/order/{orderId}/refundStatus
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/order/refund/api/IRefundDetailsApi;->getRefundDetails
+  Parameter 1: Path(orderId) : java.lang.String
+  Return type: io.reactivex.t
+
+APK-241 PATCH user/v1/transactions/refunds/ack
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/order/refund/api/IRefundDetailsApi;->updateRefundFeedback
+  Parameter 1: QueryMap : java.util.Map
+  Return type: io.reactivex.t
+
+APK-242 GET <runtime URL / empty annotation path>
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/orderhelp/IOrderHelpAPI;->getOrderIssues
+  Parameter 1: Url : java.lang.String
+  Parameter 2: Query(orderId) : java.lang.String
+  Return type: io.reactivex.d
+
+APK-243 GET /api/v2/help/issues
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/orderhelp/IOrderHelpAPI;->getHelpSupport
+  Return type: io.reactivex.d
+
+APK-244 POST api/v3/app/login/call_verification_status
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/otprequest/api/IRequestOtpApi;->fetchCallVerificationStatus
+  Return type: kotlinx.coroutines.flow.g
+
+APK-245 POST api/v3/app/request_call_verification
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/otprequest/api/IRequestOtpApi;->requestCallVerification
+  Parameter 1: Body : in.swiggy.android.tejas.feature.otprequest.models.a
+  Return type: kotlinx.coroutines.flow.g
+
+APK-246 GET api/v3/app/sms_otp
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/otprequest/api/IRequestOtpApi;->requestSmsOtp
+  Parameter 1: Query(mobile) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-247 POST api/v3/app/whatsapp_otp
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/otprequest/api/IRequestOtpApi;->requestWhatsappOtp
+  Parameter 1: Body : in.swiggy.android.tejas.feature.otprequest.models.a
+  Return type: kotlinx.coroutines.flow.g
+
+APK-248 POST api/v1/app/login/call_verification_status
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/otpverification/IOtpVerificationApi;->getCallVerificationStatus
+  Return type: java.lang.Object
+
+APK-249 POST api/v2/app/request_call_verification
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/otpverification/IOtpVerificationApi;->initiateCallVerification
+  Parameter 1: Body : in.swiggy.android.tejas.feature.otpverification.a
+  Return type: java.lang.Object
+
+APK-250 POST api/v2/app/whatsapp_otp
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/otpverification/IOtpVerificationApi;->requestWhatsappOtp
+  Parameter 1: Body : in.swiggy.android.tejas.feature.otpverification.a
+  Return type: java.lang.Object
+
+APK-251 POST api/v3/app/login/call_verification_status
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/otpverification/IOtpVerificationApi;->getCallVerificationStatusV3
+  Return type: java.lang.Object
+
+APK-252 POST api/v3/app/request_call_verification
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/otpverification/IOtpVerificationApi;->initiateCallVerificationV3
+  Parameter 1: Body : in.swiggy.android.tejas.feature.otpverification.a
+  Return type: java.lang.Object
+
+APK-253 POST api/v3/app/whatsapp_otp
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/otpverification/IOtpVerificationApi;->requestWhatsappOtpV3
+  Parameter 1: Body : in.swiggy.android.tejas.feature.otpverification.a
+  Return type: java.lang.Object
+
+APK-254 POST api/v1/instamart/print_preview
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/print/api/IPrintApi;->requestPreviewDocData
+  Parameter 1: Body : in.swiggy.android.tejas.feature.print.b
+  Parameter 2: Query(lat) : java.lang.String
+  Parameter 3: Query(lng) : java.lang.String
+  Parameter 4: Query(pod_id) : java.lang.String
+  Parameter 5: Query(page_name) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-255 GET /address/recommend
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/recommends/IKmmRecommendsApi;->getRecommedsListFromLatlng
+  Parameter 1: Query(latlng) : java.lang.String
+  Parameter 2: Header(Recommends-Id) : java.lang.String
+  Parameter 3: Query(enrich_poi_components) : Z
+  Return type: java.lang.Object
+
+APK-256 GET /address/homepage
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/recommends/IRecommendsApi;->getRecommendsListFromHomePageApi
+  Parameter 1: Query(latlng) : java.lang.String
+  Parameter 2: Header(client-id) : java.lang.String
+  Parameter 3: Header(source) : java.lang.String
+  Parameter 4: Header(recommends-Id) : java.lang.String
+  Return type: io.reactivex.d
+
+APK-257 GET /address/recommend
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/recommends/IRecommendsApi;->getRecommedsListFromLatlng
+  Parameter 1: Query(latlng) : java.lang.String
+  Parameter 2: Header(Recommends-Id) : java.lang.String
+  Parameter 3: Header(client-id) : java.lang.String
+  Parameter 4: Query(enrich_poi_components) : Z
+  Return type: java.lang.Object
+
+APK-258 GET /address/recommend
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/recommends/IRecommendsApi;->getRecommedsListFromPlaceId
+  Parameter 1: Query(place_id) : java.lang.String
+  Parameter 2: Header(Recommends-Id) : java.lang.String
+  Parameter 3: Header(client-id) : java.lang.String
+  Parameter 4: Query(enrich_poi_components) : Z
+  Return type: io.reactivex.d
+
+APK-259 GET /address/recommend
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/recommends/IRecommendsApi;->getRecommendsListFromPlaceIdV2
+  Parameter 1: Query(place_id) : java.lang.String
+  Parameter 2: Header(Recommends-Id) : java.lang.String
+  Parameter 3: Header(client-id) : java.lang.String
+  Parameter 4: Query(enrich_poi_components) : Z
+  Return type: java.lang.Object
+
+APK-260 POST api/v1/referral/intrigue
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/referee/api/IGiftIntrigueApi;->giftIntrigueApi
+  Parameter 1: Body : in.swiggy.android.tejas.feature.referee.models.a
+  Return type: kotlinx.coroutines.flow.g
+
+APK-261 POST api/v1/referral/reveal
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/referee/api/IGiftRevealApi;->revealOffer
+  Parameter 1: Body : in.swiggy.android.tejas.feature.referee.models.a
+  Return type: kotlinx.coroutines.flow.g
+
+APK-262 POST api/v1/referral/validity
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/referral/api/IReferralApi;->renewExpiryCoupon
+  Parameter 1: Header(incentiveId) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-263 GET api/v1/referrer/check
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/referral/api/IReferralApi;->checkReferralEligibility
+  Return type: kotlinx.coroutines.flow.g
+
+APK-264 POST api/v1/referrer/contact
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/referral/api/IReferralApi;->postPhoneNoRequestForContactSync
+  Parameter 1: Body : in.swiggy.android.tejas.feature.referral.model.c
+  Return type: kotlinx.coroutines.flow.g
+
+APK-265 POST api/v1/referrer/landing
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/referral/api/IReferralApi;->getReferralLandingScreenData
+  Parameter 1: QueryMap : java.util.Map
+  Return type: kotlinx.coroutines.flow.g
+
+APK-266 POST api/v2/referrer/landing
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/referral/api/IReferralApi;->getReferralLandingScreenDataForContactSync
+  Parameter 1: Header(contacts_permission) : java.lang.String
+  Parameter 2: QueryMap : java.util.Map
+  Return type: kotlinx.coroutines.flow.g
+
+APK-267 POST /api/v1/instamart/relay-vendor-order
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/relayvendor/api/IRelayVendorApi;->callRelayVendorApi
+  Parameter 1: Body : in.swiggy.android.tejas.feature.relayvendor.RelayVendorRequest
+  Return type: java.lang.Object
+
+APK-268 POST /api/v1/instamart/relay-verification-order
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/relayvendor/api/IRelayVendorApi;->callRelayVerificationOrderApi
+  Parameter 1: Body : in.swiggy.android.tejas.feature.relayvendor.RelayVerificationOrderRequest
+  Return type: java.lang.Object
+
+APK-269 POST /api/v1/json/layout-section/{sectionId}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/relevance/IRelevanceAPI;->getRelevantJsonItems
+  Parameter 1: Path(sectionId) : java.lang.String
+  Parameter 2: Query(lat) : D
+  Parameter 3: Query(lng) : D
+  Parameter 4: Body : java.lang.Object
+  Return type: io.reactivex.t
+
+APK-270 POST /api/v1/layout-section/{sectionId}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/relevance/IRelevanceAPI;->getRelevantItems
+  Parameter 1: Path(sectionId) : java.lang.String
+  Parameter 2: Query(lat) : D
+  Parameter 3: Query(lng) : D
+  Parameter 4: Body : java.lang.Object
+  Return type: io.reactivex.t
+
+APK-271 POST /api/v1/scratch-card/assign
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/scratchcards/api/IRewardOfferApi;->assignRewardOffer
+  Parameter 1: Body : in.swiggy.android.tejas.feature.scratchcards.model.e0
+  Return type: kotlinx.coroutines.flow.g
+
+APK-272 POST /api/v1/scratch-card/assign
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/scratchcards/api/IRewardOfferApi;->assignRewardOfferJson
+  Parameter 1: Body : in.swiggy.android.tejas.feature.scratchcards.model.e0
+  Return type: kotlinx.coroutines.flow.g
+
+APK-273 POST /api/v1/scratch-card/unlock
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/scratchcards/api/IRewardOfferApi;->unlockRewardOffer
+  Parameter 1: Body : in.swiggy.android.tejas.feature.scratchcards.model.e0
+  Return type: kotlinx.coroutines.flow.g
+
+APK-274 POST /api/v1/scratch-card/unlock
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/scratchcards/api/IRewardOfferApi;->unlockRewardOfferJson
+  Parameter 1: Body : in.swiggy.android.tejas.feature.scratchcards.model.e0
+  Return type: kotlinx.coroutines.flow.g
+
+APK-275 POST api/v3/json/search/dish-add
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/search/api/dishadd/ISearchMoreOptionsJsonApi;->getMoreOptionsFromRestaurant
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Parameter 3: Body : in.swiggy.android.tejas.feature.search.request.moredish.ItemAddedPostableRequest
+  Return type: io.reactivex.t
+
+APK-276 POST api/v3/search/dish-add
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/search/api/dishadd/ISearchMoreOptionsProtoApi;->getMoreOptionsFromRestaurant
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Parameter 3: Body : in.swiggy.android.tejas.feature.search.request.moredish.ItemAddedPostableRequest
+  Return type: io.reactivex.t
+
+APK-277 POST /api/v1/menu/search
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/search/api/results/IAipSearchAPI;->getAipSearchResponse
+  Parameter 1: Body : in.swiggy.android.tejas.feature.search.request.AipSearchRequest
+  Parameter 2: Query(lat) : D
+  Parameter 3: Query(lng) : D
+  Parameter 4: HeaderMap : java.util.Map
+  Return type: io.reactivex.t
+
+APK-278 POST /api/v1/menu/search/json
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/search/api/results/IAipSearchAPI;->getAipSearchJsonResponse
+  Parameter 1: Body : in.swiggy.android.tejas.feature.search.request.AipSearchRequest
+  Parameter 2: Query(lat) : D
+  Parameter 3: Query(lng) : D
+  Parameter 4: HeaderMap : java.util.Map
+  Return type: io.reactivex.t
+
+APK-279 POST /api/v1/menu/search
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/search/api/results/ICollectionSearchAPI;->getCollectionSearchResponse
+  Parameter 1: Body : in.swiggy.android.tejas.feature.search.request.CollectionSearchRequest
+  Parameter 2: Query(lat) : D
+  Parameter 3: Query(lng) : D
+  Return type: io.reactivex.t
+
+APK-280 POST /api/v1/menu/search/json
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/search/api/results/ICollectionSearchAPI;->getCollectionSearchJsonResponse
+  Parameter 1: Body : in.swiggy.android.tejas.feature.search.request.CollectionSearchRequest
+  Parameter 2: Query(lat) : D
+  Parameter 3: Query(lng) : D
+  Return type: io.reactivex.t
+
+APK-281 POST api/v1/json/ai-search/
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/search/api/results/ISearchResultsJsonApi;->getAiSearchResults
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Parameter 3: Body : in.swiggy.android.tejas.feature.search.request.srp.SRPPostableRequest
+  Parameter 4: Header(commonHeaders) : in.swiggy.android.tejas.feature.common.a
+  Return type: io.reactivex.t
+
+APK-282 POST api/v1/json/ai-search/{tabId}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/search/api/results/ISearchResultsJsonApi;->getAiSearchResultsForTab
+  Parameter 1: Path(tabId) : java.lang.String
+  Parameter 2: Query(lat) : D
+  Parameter 3: Query(lng) : D
+  Parameter 4: Body : in.swiggy.android.tejas.feature.search.request.srp.SRPPostableRequest
+  Parameter 5: Header(commonHeaders) : in.swiggy.android.tejas.feature.common.a
+  Return type: io.reactivex.t
+
+APK-283 POST api/v1/json/layout-section/PRE_SEARCH
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/search/api/results/ISearchResultsJsonApi;->getPreSearchLayoutSection
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Parameter 3: Body : in.swiggy.android.tejas.feature.search.request.a
+  Return type: java.lang.Object
+
+APK-284 POST api/v3/json/search/{tabId}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/search/api/results/ISearchResultsJsonApi;->getSearchResults
+  Parameter 1: Path(tabId) : java.lang.String
+  Parameter 2: Query(lat) : D
+  Parameter 3: Query(lng) : D
+  Parameter 4: Body : in.swiggy.android.tejas.feature.search.request.srp.SRPPostableRequest
+  Parameter 5: Header(commonHeaders) : in.swiggy.android.tejas.feature.common.a
+  Return type: io.reactivex.t
+
+APK-285 POST api/v1/ai-search/
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/search/api/results/ISearchResultsProtobufAPI;->getAiSearchResults
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Parameter 3: Body : in.swiggy.android.tejas.feature.search.request.srp.SRPPostableRequest
+  Parameter 4: Header(commonHeaders) : in.swiggy.android.tejas.feature.common.a
+  Return type: io.reactivex.t
+
+APK-286 POST api/v1/ai-search/{tabId}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/search/api/results/ISearchResultsProtobufAPI;->getAiSearchResultsForTab
+  Parameter 1: Path(tabId) : java.lang.String
+  Parameter 2: Query(lat) : D
+  Parameter 3: Query(lng) : D
+  Parameter 4: Body : in.swiggy.android.tejas.feature.search.request.srp.SRPPostableRequest
+  Parameter 5: Header(commonHeaders) : in.swiggy.android.tejas.feature.common.a
+  Return type: io.reactivex.t
+
+APK-287 POST api/v1/layout-section/PRE_SEARCH
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/search/api/results/ISearchResultsProtobufAPI;->getPreSearchLayoutSection
+  Parameter 1: Query(lat) : D
+  Parameter 2: Query(lng) : D
+  Parameter 3: Body : in.swiggy.android.tejas.feature.search.request.a
+  Return type: java.lang.Object
+
+APK-288 POST api/v3/search/{tabId}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/search/api/results/ISearchResultsProtobufAPI;->getSearchResults
+  Parameter 1: Path(tabId) : java.lang.String
+  Parameter 2: Query(lat) : D
+  Parameter 3: Query(lng) : D
+  Parameter 4: Body : in.swiggy.android.tejas.feature.search.request.srp.SRPPostableRequest
+  Parameter 5: Header(commonHeaders) : in.swiggy.android.tejas.feature.common.a
+  Return type: io.reactivex.t
+
+APK-289 POST /api/v1/json/{pageID}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/search/api/suggestion/ISearchInlineAdsJsonApi;->evaluatePageJson
+  Parameter 1: Path(pageID) : java.lang.String
+  Parameter 2: Query(lat) : java.lang.String
+  Parameter 3: Query(lng) : java.lang.String
+  Parameter 4: Query(collection_identifier) : java.lang.String
+  Parameter 5: Body : java.lang.Object
+  Return type: io.reactivex.t
+
+APK-290 POST /api/v1/{pageID}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/search/api/suggestion/ISearchInlineAdsProtobufApi;->evaluatePage
+  Parameter 1: Path(pageID) : java.lang.String
+  Parameter 2: Query(lat) : java.lang.String
+  Parameter 3: Query(lng) : java.lang.String
+  Parameter 4: Query(collection_identifier) : java.lang.String
+  Parameter 5: Body : java.lang.Object
+  Return type: io.reactivex.t
+
+APK-291 POST api/search/suggest/v1
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/search/api/suggestion/ISearchSuggestionsApi;->getSearchSuggestions
+  Parameter 1: Query(q) : java.lang.String
+  Parameter 2: Body : in.swiggy.android.tejas.feature.search.request.suggestions.b
+  Return type: io.reactivex.t
+
+APK-292 POST api/v1/json/auto-suggest/{tabId}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/search/api/suggestion/ISearchSuggestionsJsonApi;->getPLSearchSuggestions
+  Parameter 1: Path(tabId) : java.lang.String
+  Parameter 2: Query(lat) : D
+  Parameter 3: Query(lng) : D
+  Parameter 4: Body : in.swiggy.android.tejas.feature.search.request.suggestions.a
+  Parameter 5: Header(commonHeaders) : in.swiggy.android.tejas.feature.common.a
+  Return type: io.reactivex.t
+
+APK-293 POST api/v1/auto-suggest/{tabId}
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/search/api/suggestion/ISearchSuggestionsProtobufAPI;->getPLSearchSuggestions
+  Parameter 1: Path(tabId) : java.lang.String
+  Parameter 2: Query(lat) : D
+  Parameter 3: Query(lng) : D
+  Parameter 4: Body : in.swiggy.android.tejas.feature.search.request.suggestions.a
+  Parameter 5: Header(commonHeaders) : in.swiggy.android.tejas.feature.common.a
+  Return type: io.reactivex.t
+
+APK-294 POST api/v1/config/settings
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/settings/api/ISettingsApi;->getSettingsResponse
+  Parameter 1: Body : in.swiggy.android.tejas.oldapi.network.requests.u
+  Parameter 2: Query(silentSession) : Z
+  Parameter 3: Header(page-type) : java.lang.String
+  Return type: io.reactivex.d
+
+APK-295 POST api/v3/app/signup
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/signup/api/ISignUpApi;->signUpUser
+  Parameter 1: Header(manufacturer) : java.lang.String
+  Parameter 2: Header(model-name) : java.lang.String
+  Parameter 3: Body : in.swiggy.android.tejas.feature.signup.models.c
+  Return type: kotlinx.coroutines.flow.g
+
+APK-296 GET /place/autocomplete
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/swiggygoogle/swiggyplacesearch/ISwiggyPlacesSearchAPI;->getGooglePlacesFromSwiggyPlaceAutoCompleteApi
+  Parameter 1: Query(input) : java.lang.String
+  Parameter 2: Query(location) : java.lang.String
+  Parameter 3: Query(radius) : java.lang.String
+  Parameter 4: HeaderMap : java.util.Map
+  Return type: io.reactivex.d
+
+APK-297 GET /place/autocomplete
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/swiggygoogle/swiggyplacesearch/ISwiggyPlacesSearchAPI;->getGooglePlacesFromSwiggyPlaceAutoCompleteApiV2
+  Parameter 1: Query(input) : java.lang.String
+  Parameter 2: Query(location) : java.lang.String
+  Parameter 3: Query(radius) : java.lang.String
+  Parameter 4: HeaderMap : java.util.Map
+  Return type: java.lang.Object
+
+APK-298 GET /place/autocomplete
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/swiggygoogle/swiggyplacesearch/api/IPlacesSearchAPI;->getGooglePlacesFromAutoComplete
+  Parameter 1: Query(input) : java.lang.String
+  Parameter 2: Query(location) : java.lang.String
+  Parameter 3: Query(radius) : java.lang.String
+  Parameter 4: HeaderMap : java.util.Map
+  Return type: kotlinx.coroutines.flow.g
+
+APK-299 POST api/fraudnabuse/v1/entity
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/tns/IFnaApi;->sendTnsSignals
+  Parameter 1: Body : in.swiggy.android.tejas.feature.tns.model.b
+  Return type: io.reactivex.d
+
+APK-300 POST api/fraudnabuse/v1/fact/device-session/fingerprint
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/tns/IFnaApi;->sendDeviceIdSignals
+  Parameter 1: Body : okhttp3.RequestBody
+  Return type: java.lang.Object
+
+APK-301 POST /api/v1/delete/user
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/user/IProfileApi;->deleteUser
+  Parameter 1: Body : in.swiggy.android.tejas.feature.user.i
+  Return type: kotlinx.coroutines.flow.g
+
+APK-302 GET /api/v1/delete/user_check
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/user/IProfileApi;->deleteUserCheck
+  Return type: kotlinx.coroutines.flow.g
+
+APK-303 POST /api/v1/user/manage_consent
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/user/IProfileApi;->manageConsent
+  Parameter 1: Body : in.swiggy.android.tejas.feature.user.f
+  Return type: kotlinx.coroutines.flow.g
+
+APK-304 GET api/v3/user/profile
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/user/IProfileApi;->refreshProfile
+  Parameter 1: Header(manufacturer) : java.lang.String
+  Parameter 2: Header(model-name) : java.lang.String
+  Parameter 3: Query(silentSession) : Z
+  Parameter 4: Query(optionalKeys) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-305 GET api/v4/user/profile
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/feature/user/IProfileApi;->refreshProfileV4
+  Parameter 1: Header(manufacturer) : java.lang.String
+  Parameter 2: Header(model-name) : java.lang.String
+  Parameter 3: Query(silentSession) : Z
+  Parameter 4: Query(optionalKeys) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-306 GET /api/v1/getUserConsent
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/userConsent/api/IUserConsentAPI;->getUserConsent
+  Return type: java.lang.Object
+
+APK-307 PUT /api/v1/userConsent
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/userConsent/api/IUserConsentAPI;->updateUserConsent
+  Parameter 1: Body : in.swiggy.android.tejas.feature.userConsent.model.h
+  Return type: java.lang.Object
+
+APK-308 GET <runtime URL / empty annotation path>
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/voiceDirections/api/a;->a
+  Parameter 1: Url : java.lang.String
+  Return type: java.lang.Object
+
+APK-309 POST <runtime URL / empty annotation path>
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/voiceDirections/api/a;->c
+  Encoding: Multipart
+  Parameter 1: Url : java.lang.String
+  Parameter 2: Part(Content-Type) : okhttp3.RequestBody
+  Parameter 3: Part(bucket) : okhttp3.RequestBody
+  Parameter 4: Part(key) : okhttp3.RequestBody
+  Parameter 5: Part(policy) : okhttp3.RequestBody
+  Parameter 6: Part(x-amz-algorithm) : okhttp3.RequestBody
+  Parameter 7: Part(x-amz-credential) : okhttp3.RequestBody
+  Parameter 8: Part(x-amz-date) : okhttp3.RequestBody
+  Parameter 9: Part(x-amz-signature) : okhttp3.RequestBody
+  Parameter 10: Part : okhttp3.MultipartBody$Part
+  Return type: java.lang.Object
+
+APK-310 POST signed-url/download
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/voiceDirections/api/a;->b
+  Parameter 1: Header(client-id) : java.lang.String
+  Parameter 2: Header(content-type) : java.lang.String
+  Parameter 3: Header(tid) : java.lang.String
+  Parameter 4: Body : in.swiggy.android.tejas.feature.voiceDirections.model.b
+  Return type: java.lang.Object
+
+APK-311 GET signed-url/upload/voice-directions
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/feature/voiceDirections/api/a;->d
+  Parameter 1: Header(client-id) : java.lang.String
+  Parameter 2: Header(content-type) : java.lang.String
+  Parameter 3: Header(tid) : java.lang.String
+  Return type: java.lang.Object
+
+APK-312 POST /api/v1/instamart/pass/activate
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/im/activatePass/IPassApi;->activatePass
+  Parameter 1: Body : in.swiggy.android.tejas.im.activatePass.b
+  Parameter 2: Header(metainfo) : java.lang.String
+  Return type: java.lang.Object
+
+APK-313 POST /api/v2/view/clear-cart?cartType=INSTAMART
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/im/feature/IInstamartApi;->clearInstamartCart
+  Return type: kotlinx.coroutines.flow.g
+
+APK-314 GET /api/v2/view?cartType=INSTAMART
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/im/feature/IInstamartApi;->getInstamartCart
+  Parameter 1: Query(incConsents) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-315 POST api/v2/view/INSTAMART?pageType=INSTAMART_CART
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/im/feature/IInstamartApi;->getInstamartCartWithLayoutDetails
+  Parameter 1: Header(versionCode) : java.lang.String
+  Parameter 2: Body : in.swiggy.android.tejas.im.feature.model.cartdata.PostCartData
+  Parameter 3: Query(source) : java.lang.String
+  Return type: java.lang.Object
+
+APK-316 POST api/v2/view/INSTAMART?pageType=INSTAMART_HOME
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/im/feature/IInstamartApi;->updateCart
+  Parameter 1: Header(versionCode) : java.lang.String
+  Parameter 2: Body : in.swiggy.android.tejas.im.feature.model.cartdata.PostCartData
+  Parameter 3: Query(source) : java.lang.String
+  Return type: java.lang.Object
+
+APK-317 POST /api/v1/pre-select
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/im/preselect/IPreSelectApi;->preSelect
+  Parameter 1: Body : in.swiggy.android.tejas.im.preselect.d
+  Return type: java.lang.Object
+
+APK-318 POST /api/v1/instamart/user-preferences/update
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/im/userPrefrence/IUserPreferenceApi;->updateUserPreferences
+  Parameter 1: Body : in.swiggy.android.tejas.im.userPrefrence.l
+  Return type: java.lang.Object
+
+APK-319 GET /payment/presentation/api/juspaywallets/v2/getCustomerAuthToken
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/ozone/api/IInAppUPIApi;->clientAuthTokenV2
+  Parameter 1: Header(tenant) : java.lang.String
+  Return type: java.lang.Object
+
+APK-320 POST /payment/presentation/v1/inappupi/update
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/ozone/api/IInAppUPIApi;->saveGstResponse
+  Parameter 1: Header(inapp_upi_accounts_hash) : java.lang.String
+  Parameter 2: Body : okhttp3.RequestBody
+  Return type: java.lang.Object
+
+APK-321 POST /v1/accounts/signInWithTID
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/ozone/api/IOzoneApi;->signInWithTid
+  Parameter 1: Body : in.swiggy.android.tejas.ozone.c
+  Return type: java.lang.Object
+
+APK-322 POST /v1/token/refresh
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/ozone/api/IOzoneApi;->refreshAccessToken
+  Parameter 1: Body : in.swiggy.android.tejas.ozone.b
+  Return type: java.lang.Object
+
+APK-323 GET /api/v1/dash/oms/order/{orderJobId}/context/ORDER_JOB
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/payment/IDashPaymentApi;->getOrderByJobId
+  Parameter 1: Path(orderJobId) : java.lang.String
+  Return type: io.reactivex.d
+
+APK-324 POST /api/v1/payment/presentation/client/callback/confirmTransaction
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/payment/IDashPaymentApi;->makeConfirmPayment
+  Parameter 1: Body : in.swiggy.android.tejas.payment.model.placeorder.f
+  Return type: io.reactivex.d
+
+APK-325 GET <runtime URL / empty annotation path>
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/payment/IPaymentApi;->getOrderConfirmation
+  Parameter 1: Url : java.lang.String
+  Parameter 2: QueryMap : java.util.Map
+  Parameter 3: HeaderMap : java.util.Map
+  Parameter 4: Body : java.util.Map
+  Return type: io.reactivex.d
+
+APK-326 GET <runtime URL / empty annotation path>
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/payment/IPaymentApi;->getOrderConfirmationV2
+  Parameter 1: Url : java.lang.String
+  Parameter 2: QueryMap : java.util.Map
+  Parameter 3: HeaderMap : java.util.Map
+  Parameter 4: Body : java.util.Map
+  Return type: io.reactivex.d
+
+APK-327 POST <runtime URL / empty annotation path>
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/payment/IPaymentApi;->postOrderConfirmation
+  Parameter 1: Url : java.lang.String
+  Parameter 2: QueryMap : java.util.Map
+  Parameter 3: HeaderMap : java.util.Map
+  Parameter 4: Body : java.util.Map
+  Return type: io.reactivex.d
+
+APK-328 POST <runtime URL / empty annotation path>
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/payment/IPaymentApi;->postOrderConfirmationV2
+  Parameter 1: Url : java.lang.String
+  Parameter 2: QueryMap : java.util.Map
+  Parameter 3: HeaderMap : java.util.Map
+  Parameter 4: Body : java.util.Map
+  Return type: io.reactivex.d
+
+APK-329 GET /daily/orderpl/v1/get
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/payment/IPaymentApi;->getOrderByJobIdDaily
+  Parameter 1: Query(orderId) : java.lang.String
+  Return type: io.reactivex.d
+
+APK-330 GET /payment/presentation/api/juspaywallets/v2/getCustomerAuthToken
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/payment/IPaymentApi;->getAuthTokenForJuspayV2
+  Parameter 1: Header(tenant) : java.lang.String
+  Return type: io.reactivex.d
+
+APK-331 GET api/paylater/paytm/v1/isLinked
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/payment/IPaymentApi;->isPaytmPostPaidLinked
+  Return type: io.reactivex.d
+
+APK-332 POST api/v1/cards/juspay
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/payment/IPaymentApi;->deleteCard
+  Parameter 1: Body : in.swiggy.android.tejas.payment.model.juspay.a
+  Return type: io.reactivex.d
+
+APK-333 GET api/v1/user/paytmwallet/check_balance
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/payment/IPaymentApi;->checkPaytmBalance
+  Return type: io.reactivex.d
+
+APK-334 GET api/v1/user/paytmwallet/sso_token
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/payment/IPaymentApi;->paytmSSOToken
+  Return type: io.reactivex.d
+
+APK-335 POST api/v2/order/confirm
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/payment/IPaymentApi;->confirmOrder
+  Parameter 1: Query(order_id) : java.lang.String
+  Parameter 2: Query(retry_attempt) : java.lang.String
+  Return type: io.reactivex.d
+
+APK-336 DELETE payment/presentation/api/v1/upi/delete
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/payment/IPaymentApi;->deleteSavedVpa
+  Parameter 1: Query(vpa) : java.lang.String
+  Return type: io.reactivex.d
+
+APK-337 GET /api/v3/juspay/get-customer-auth-token
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/payment/IPaymentV2Api;->getAuthTokenForJuspayV3
+  Parameter 1: Header(tenants) : java.lang.String
+  Return type: io.reactivex.d
+
+APK-338 GET /api/v3/juspay/get-customer-auth-token
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/tejas/payment/IPaymentV2Api;->getAuthTokenForJuspayV3Suspend
+  Parameter 1: Header(tenants) : java.lang.String
+  Return type: java.lang.Object
+
+APK-339 DELETE /payment/presentation/v1/refunds/clearNotification
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/payment/IRefundsAPI;->removeRefundsNotification
+  Return type: io.reactivex.d
+
+APK-340 POST /api/v1/instaprint/batch-generate-pre-signed-upload-url
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/print/api/IPrintApi;->generatePreSignedURL
+  Parameter 1: Body : in.swiggy.android.tejas.print.data.j
+  Return type: kotlinx.coroutines.flow.g
+
+APK-341 POST /api/v1/instaprint/batch-validate-document
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/print/api/IPrintApi;->validateDocument
+  Parameter 1: Body : in.swiggy.android.tejas.print.data.g0
+  Return type: kotlinx.coroutines.flow.g
+
+APK-342 PUT <runtime URL / empty annotation path>
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/print/api/IS3UploadApi;->uploadMedia
+  Parameter 1: Url : java.lang.String
+  Parameter 2: Body : okhttp3.RequestBody
+  Parameter 3: Header(Content-Type) : java.lang.String
+  Parameter 4: Header(x-amz-meta-user_id) : java.lang.String
+  Parameter 5: HeaderMap : java.util.Map
+  Return type: java.lang.Object
+
+APK-343 POST /api/v1/review/meta
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/rating/IRatingApi;->getReviewsMeta
+  Parameter 1: Body : in.swiggy.android.tejas.rating.g
+  Return type: kotlinx.coroutines.flow.g
+
+APK-344 POST api/v1/review/dismiss
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/rating/IRatingDismissApi;->dismissRating
+  Parameter 1: Body : in.swiggy.android.tejas.feature.edm.model.EdmPostableRating
+  Return type: io.reactivex.d
+
+APK-345 PUT /api/v1/review
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/rating/IRatingSubmitApi;->postSubmitRating
+  Parameter 1: Body : in.swiggy.android.tejas.feature.edm.model.e
+  Return type: io.reactivex.d
+
+APK-346 GET getlink/v1
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/shareaddress/api/IAddressDeepLinkApi;->getAddressDeepLink
+  Parameter 1: Query(aid) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-347 GET getlink/v1
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/shareaddress/api/IAddressDeepLinkApi;->getAddressDeepLinkRx
+  Parameter 1: Query(aid) : java.lang.String
+  Return type: io.reactivex.d
+
+APK-348 GET getlink/v1
+  Source: Swiggy.apk/classes7.dex :: Lin/swiggy/android/tejas/shareaddress/api/IAddressDeepLinkApi;->getAddressDeepLinkRxV2
+  Parameter 1: Query(aid) : java.lang.String
+  Return type: java.lang.Object
+
+APK-349 GET v3/order/address-update-eligible
+  Source: Swiggy.apk/classes8.dex :: Lin/swiggy/android/track/addressUpdate/api/a;->a
+  Parameter 1: Query(order_id) : java.lang.String
+  Return type: java.lang.Object
+
+APK-350 POST addresses/v1/nearby-eligible
+  Source: Swiggy.apk/classes8.dex :: Lin/swiggy/android/track/addressUpdate/api/c;->a
+  Parameter 1: Body : in.swiggy.android.track.addressUpdate.models.f
+  Return type: java.lang.Object
+
+APK-351 GET /v3/order/receiver-update-eligible
+  Source: Swiggy.apk/classes8.dex :: Lin/swiggy/android/track/editreceiverdetails/repository/api/a;->a
+  Parameter 1: Query(order_id) : java.lang.String
+  Return type: java.lang.Object
+
+APK-352 POST /api/v4/order/edit
+  Source: Swiggy.apk/classes8.dex :: Lin/swiggy/android/track/editreceiverdetails/repository/api/b;->a
+  Parameter 1: Body : in.swiggy.android.tejas.deliveryInstructions.e
+  Return type: java.lang.Object
+
+APK-353 POST /api/v1/poll-widgets
+  Source: Swiggy.apk/classes8.dex :: Lin/swiggy/android/track/v4/api/a;->b
+  Parameter 1: Body : in.swiggy.android.track.v4.network.TrackWidgetPollingRequestV2
+  Return type: java.lang.Object
+
+APK-354 GET /api/v1/widgets
+  Source: Swiggy.apk/classes8.dex :: Lin/swiggy/android/track/v4/api/a;->a
+  Parameter 1: Query(page_type) : java.lang.String
+  Parameter 2: Query(order_id) : java.lang.String
+  Parameter 3: Query(widget_ids) : java.lang.String
+  Parameter 4: Query(previous_display_state) : java.lang.String
+  Return type: java.lang.Object
+
+APK-355 POST /api/v2/track/card
+  Source: Swiggy.apk/classes8.dex :: Lin/swiggy/android/track/v4/api/a;->c
+  Parameter 1: Body : in.swiggy.android.track.v4.network.PostableTrackWidgetsRequest
+  Return type: java.lang.Object
+
+APK-356 POST /api/v1/json/poll-widgets
+  Source: Swiggy.apk/classes8.dex :: Lin/swiggy/android/track/v4/api/b;->b
+  Parameter 1: Body : in.swiggy.android.track.v4.network.TrackWidgetPollingRequestV2
+  Return type: java.lang.Object
+
+APK-357 GET /api/v1/widgets
+  Source: Swiggy.apk/classes8.dex :: Lin/swiggy/android/track/v4/api/b;->a
+  Parameter 1: Query(page_type) : java.lang.String
+  Parameter 2: Query(order_id) : java.lang.String
+  Parameter 3: Query(widget_ids) : java.lang.String
+  Parameter 4: Query(previous_display_state) : java.lang.String
+  Return type: java.lang.Object
+
+APK-358 POST /api/v2/json/track/card
+  Source: Swiggy.apk/classes8.dex :: Lin/swiggy/android/track/v4/api/b;->c
+  Parameter 1: Body : in.swiggy.android.track.v4.network.PostableTrackWidgetsRequest
+  Return type: java.lang.Object
+
+APK-359 POST /directions
+  Source: Swiggy.apk/classes8.dex :: Lin/swiggy/android/track/viewmodels/v3/directions/api/a;->a
+  Parameter 1: Body : in.swiggy.koordinates.compass.directions.api.models.swiggy.l
+  Return type: java.lang.Object
+
+APK-360 GET <runtime URL / empty annotation path>
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/web/tejas/filedownload/c;->a
+  Parameter 1: Url : java.lang.String
+  Return type: io.reactivex.t
+
+APK-361 GET <runtime URL / empty annotation path>
+  Source: Swiggy.apk/classes3.dex :: Lin/swiggy/android/web/tejas/resources/g;->a
+  Parameter 1: Url : java.lang.String
+  Parameter 2: Query(package) : java.lang.String
+  Parameter 3: Query(hash) : java.lang.String
+  Parameter 4: Query(context) : java.lang.String
+  Parameter 5: Query(v) : java.lang.Long
+  Return type: io.reactivex.t
+
+APK-362 DELETE /api/v1/shared_cart
+  Source: Swiggy.apk/classes8.dex :: Lin/swiggy/grouporder/data/api/a;->f
+  Parameter 1: Query(group_cart_id) : java.lang.String
+  Parameter 2: Query(user_id) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-363 GET /api/v1/shared_cart
+  Source: Swiggy.apk/classes8.dex :: Lin/swiggy/grouporder/data/api/a;->a
+  Parameter 1: Query(group_cart_id) : java.lang.String
+  Return type: kotlinx.coroutines.flow.g
+
+APK-364 POST /api/v1/shared_cart/create
+  Source: Swiggy.apk/classes8.dex :: Lin/swiggy/grouporder/data/api/a;->c
+  Parameter 1: Body : in.swiggy.grouporder.data.models.CreateGroupCartRequest
+  Return type: kotlinx.coroutines.flow.g
+
+APK-365 POST /api/v1/shared_cart/join
+  Source: Swiggy.apk/classes8.dex :: Lin/swiggy/grouporder/data/api/a;->e
+  Parameter 1: Body : in.swiggy.grouporder.data.models.c
+  Return type: kotlinx.coroutines.flow.g
+
+APK-366 POST /api/v1/shared_cart/unlock
+  Source: Swiggy.apk/classes8.dex :: Lin/swiggy/grouporder/data/api/a;->b
+  Parameter 1: Body : in.swiggy.grouporder.data.models.e
+  Return type: kotlinx.coroutines.flow.g
+
+APK-367 POST /api/v1/shared_cart/update
+  Source: Swiggy.apk/classes8.dex :: Lin/swiggy/grouporder/data/api/a;->d
+  Parameter 1: Body : in.swiggy.grouporder.data.models.f
+  Return type: kotlinx.coroutines.flow.g
+
+
+========================================================================================
+7. ADDITIONAL APK API-LIKE STRINGS - UNVERIFIED CANDIDATES
+========================================================================================
+
+Strings below are not confirmed HTTP contracts. They may be alternate hosts,
+old versions, route prefixes, analytics routes or unused code. No HTTP method
+or successful response is inferred from a string alone.
+
+STR-001 UNKNOWN /api/v1
+  Source: Swiggy.apk/classes7.dex, classes8.dex
+STR-002 UNKNOWN /api/v1/dash/launch
+  Source: Swiggy.apk/classes7.dex
+STR-003 UNKNOWN /api/v1/dash/oms/order/{id}/context
+  Source: Swiggy.apk/classes7.dex
+STR-004 UNKNOWN /api/v1/dash/serviceable/status
+  Source: Swiggy.apk/classes7.dex
+STR-005 UNKNOWN /api/v1/entity/ENTITY_DINEOUT_MENU
+  Source: Swiggy.apk/classes3.dex
+STR-006 UNKNOWN /api/v1/instamart
+  Source: Swiggy.apk/classes3.dex
+STR-007 UNKNOWN /api/v1/instamart/contextual_discovery
+  Source: Swiggy.apk/classes.dex
+STR-008 UNKNOWN /api/v1/instamart/item-reviews/ITEM_TYPE_SAMPLE
+  Source: Swiggy.apk/classes6.dex
+STR-009 UNKNOWN /api/v1/instamart/item-reviews/submit
+  Source: Swiggy.apk/classes6.dex
+STR-010 UNKNOWN /api/v1/instamart/item_list
+  Source: Swiggy.apk/classes3.dex
+STR-011 UNKNOWN /api/v1/json/unified-entity
+  Source: Swiggy.apk/classes3.dex
+STR-012 UNKNOWN /api/v1/launch-configs
+  Source: Swiggy.apk/classes3.dex
+STR-013 UNKNOWN /api/v1/unified-entity
+  Source: Swiggy.apk/classes3.dex
+STR-014 UNKNOWN /api/v2/dynamicmenu
+  Source: Swiggy.apk/classes3.dex, classes7.dex
+STR-015 UNKNOWN /api/v2/instamart/STORES_MENU
+  Source: Swiggy.apk/classes3.dex
+STR-016 UNKNOWN /api/v2/staticmenu
+  Source: Swiggy.apk/classes3.dex, classes7.dex
+STR-017 UNKNOWN api/v1/user/mobile/{number}
+  Source: Swiggy.apk/classes7.dex
+STR-018 UNKNOWN https://disc.swiggy.com/api/v2/launch
+  Source: Swiggy.apk/classes3.dex
+STR-019 UNKNOWN https://profile.swiggy.com/api/v1/catering/irctc/journey
+  Source: Swiggy.apk/classes7.dex
+
+========================================================================================
+8. PROVENANCE, HOST LITERALS AND LIMITS
+========================================================================================
+
+APK: swiggy-review/Swiggy.apk
+APK SHA-256: 341e7d65704cabae1683de44e65de9483f30985db5b0f783de00b82e897e503f
+DEX files scanned: 8
+All Retrofit HTTP declarations found: 370
+Swiggy-owned declarations included in section 6: 367
+Excluded from Swiggy section: 2 Bureau SDK declarations and 1 obfuscated
+device-telemetry declaration (ownership not established as Swiggy).
+JavaScript source files parsed: 62; parse failures: 0
+Distinct source method/URL records in section 5: 88
+Saved Instamart MCP tool schemas: 16
+Additional APK API-like literals in section 7: 19
+
+Swiggy host literals in APK (not automatic base-URL mappings; some are assets,
+analytics, internal/development or legacy hosts):
+  https://analytics.swiggy.com
+  https://app.swiggy.com
+  https://chkout.swiggy.com
+  https://dash.swiggy.com
+  https://dineout-media-assets.swiggy.com
+  https://dinersone-proxy.swiggy.com
+  https://disc.swiggy.com
+  https://fna.swiggy.com
+  https://fulfillment-middleware.swiggy.com
+  https://insanelygood.swiggy.com
+  https://instamart-media-assets.swiggy.com
+  https://instamax.swiggy.com
+  https://maps.swiggy.com
+  https://media-assets.swiggy.com
+  https://payments-staging.swiggy.com
+  https://payments.swiggy.com
+  https://pos.swiggy.com
+  https://profile.swiggy.com
+  https://promos.swiggy.com
+  https://spns.swiggy.com
+  https://stores.swiggy.com
+  https://swiggy.com
+  https://tns.swiggy.com
+  https://toing-media-assets.swiggy.com
+  https://webviews.swiggy.com
+  https://www.swiggy.com
+
+Review/evidence:
+  instamart-review/apk-analysis/REVIEW.md
+  instamart-review/apk-analysis/apk-all-api-inventory.json
+  instamart-review/apk-analysis/source-api-inventory.json
+  swiggy-review/instamart/README.md
+
+Extraction is static and read-only. Runtime request URLs, full request bodies,
+response schemas and current account eligibility remain unknown where not
+explicitly documented. This file does not assert that every endpoint is public,
+current, accessible to every account, or supported for third-party clients.
+
+END OF FILE
